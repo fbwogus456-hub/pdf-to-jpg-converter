@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, conversions, images, InsertConversion, InsertImage } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -87,6 +87,56 @@ export async function getUserByOpenId(openId: string) {
   const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
 
   return result.length > 0 ? result[0] : undefined;
+}
+
+export async function createConversion(data: InsertConversion) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(conversions).values(data);
+  // Drizzle returns InsertResult which has insertId
+  const id = (result as any).insertId;
+  if (!id) throw new Error("Failed to create conversion");
+  return { id, ...data };
+}
+
+export async function getConversionById(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.select().from(conversions).where(eq(conversions.id, id)).limit(1);
+  return result[0];
+}
+
+export async function getConversionsByUserId(userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.select().from(conversions).where(eq(conversions.userId, userId));
+  return result;
+}
+
+export async function updateConversionStatus(id: number, status: string, errorMessage?: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(conversions).set({ status: status as any, errorMessage }).where(eq(conversions.id, id));
+}
+
+export async function createImage(data: InsertImage) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(images).values(data);
+  return result[0];
+}
+
+export async function getImagesByConversionId(conversionId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.select().from(images).where(eq(images.conversionId, conversionId));
+  return result;
 }
 
 // TODO: add feature queries here as your schema grows.
