@@ -1,13 +1,4 @@
-# Allow all crawlers
 User-agent: *
 Allow: /
 
-# Explicitly allow Google crawlers
-User-agent: Googlebot
-Allow: /
-
-User-agent: Googlebot-Mobile
-Allow: /
-
-# Sitemap
 Sitemap: https://pdf-to-jpg-converter-qtod.onrender.com/sitemap.xml
