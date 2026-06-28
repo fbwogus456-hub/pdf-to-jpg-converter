@@ -3,4 +3,4 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://pdf2jpg-fs629i2u.manus.space/sitemap.xml
+Sitemap: https://pdf-to-jpg-converter-qtod.onrender.com/sitemap.xml
