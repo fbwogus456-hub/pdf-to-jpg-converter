@@ -1,0 +1,6 @@
+# Allow all search engines to crawl the site
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://pdf2jpg-fs629i2u.manus.space/sitemap.xml
