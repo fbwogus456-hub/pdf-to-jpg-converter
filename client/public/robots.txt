@@ -1,5 +1,12 @@
-# Allow all search engines to crawl the site
+# Allow all crawlers
 User-agent: *
+Allow: /
+
+# Explicitly allow Google crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Mobile
 Allow: /
 
 # Sitemap
