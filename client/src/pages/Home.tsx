@@ -143,11 +143,27 @@ export default function Home() {
         {convertedImages.length === 0 ? (
           // Upload Section
           <div className="space-y-12">
+            {/* Privacy Badge */}
+            <div className="flex flex-wrap gap-2 justify-center mb-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-full">
+                <Lock className="w-4 h-4 text-green-600" />
+                <span className="text-sm font-semibold text-green-700">100% 브라우저 처리</span>
+              </div>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded-full">
+                <CheckCircle2 className="w-4 h-4 text-blue-600" />
+                <span className="text-sm font-semibold text-blue-700">업로드 없음</span>
+              </div>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-50 border border-purple-200 rounded-full">
+                <Lock className="w-4 h-4 text-purple-600" />
+                <span className="text-sm font-semibold text-purple-700">완전 비공개</span>
+              </div>
+            </div>
+
             {/* Upload Card */}
             <Card className="border-0 shadow-lg">
               <CardHeader className="pb-4">
-                <CardTitle className="text-3xl">PDF를 JPG로 변환</CardTitle>
-                <CardDescription>가입 없이 무료로 PDF 파일을 고품질 JPG 이미지로 변환하세요</CardDescription>
+                <CardTitle className="text-3xl">파일이 서버에 업로드되지 않는 PDF to JPG 변환기</CardTitle>
+                <CardDescription>브라우저에서만 처리되는 완전히 안전한 변환. 가입 없이 무료로 사용하세요</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Quality Slider */}
@@ -416,7 +432,18 @@ export default function Home() {
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-slate-600">
-                        변환된 이미지는 임시로 저장되며, 일정 시간 후 자동으로 삭제됩니다. 필요한 이미지는 변환 직후 다운로드하시기 바랍니다.
+                        변환된 이미지는 브라우저 메모리에서만 생성되며, 페이지를 닫으면 즉시 사라집니다. 어디에도 저장되지 않습니다. 필요한 이미지는 변환 직후 다운로드하시기 바랍니다.
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-0 shadow-md">
+                    <CardHeader>
+                      <CardTitle className="text-base">왜 브라우저 처리가 더 안전한가요?</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-slate-600">
+                        서버 업로드 방식은 파일이 서버에 저장되고 처리되는 동안 노출될 수 있습니다. 반면 브라우저 처리는 파일이 당신의 기기에서만 처리되고, 인터넷으로 전송되지 않습니다. 민감한 문서나 기밀 자료도 완전히 안전하게 변환할 수 있습니다.
                       </p>
                     </CardContent>
                   </Card>
