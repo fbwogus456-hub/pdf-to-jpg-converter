@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Slider } from "@/components/ui/slider";
 import { Spinner } from "@/components/ui/spinner";
 import { trpc } from "@/lib/trpc";
-import { Upload, Download, FileImage, Zap, CheckCircle2, Lock, Smartphone, HelpCircle } from "lucide-react";
+import { Upload, Download, FileImage, Zap, CheckCircle2, Lock, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "wouter";
 
@@ -22,6 +22,12 @@ export default function Home() {
   const [isConverting, setIsConverting] = useState(false);
   const [convertedImages, setConvertedImages] = useState<ConvertedImage[]>([]);
   const [conversionId, setConversionId] = useState<number | null>(null);
+  const [totalPages, setTotalPages] = useState(0);
+  const [conversionProgress, setConversionProgress] = useState(0);
+  const [pageRangeStart, setPageRangeStart] = useState(1);
+  const [pageRangeEnd, setPageRangeEnd] = useState(1);
+  const [outputFormat, setOutputFormat] = useState<'jpg' | 'png'>('jpg');
+  const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const uploadMutation = trpc.conversion.uploadAndConvert.useMutation();
@@ -39,24 +45,48 @@ export default function Home() {
     }
 
     setIsConverting(true);
+    setConversionProgress(0);
     try {
       const reader = new FileReader();
       reader.onload = async (e) => {
         const base64 = (e.target?.result as string).split(",")[1];
-        const result = await uploadMutation.mutateAsync({
-          fileName: file.name,
-          fileData: base64,
-          quality,
-        });
+        
+        // 진행률 시뮬레이션
+        const progressInterval = setInterval(() => {
+          setConversionProgress((prev) => Math.min(prev + Math.random() * 30, 90));
+        }, 300);
 
-        setConvertedImages(result.images);
-        setConversionId(result.conversionId);
-        toast.success(`${result.pageCount}개 페이지가 성공적으로 변환되었습니다.`);
+        try {
+          const result = await uploadMutation.mutateAsync({
+            fileName: file.name,
+            fileData: base64,
+            quality,
+          });
+
+          clearInterval(progressInterval);
+          setConversionProgress(100);
+          
+          // 페이지 범위 초기화
+          setTotalPages(result.pageCount);
+          setPageRangeStart(1);
+          setPageRangeEnd(result.pageCount);
+          
+          setConvertedImages(result.images);
+          setConversionId(result.conversionId);
+          toast.success(`${result.pageCount}개 페이지가 성공적으로 변환되었습니다.`);
+          
+          // 1초 후 진행률 리셋
+          setTimeout(() => setConversionProgress(0), 1000);
+        } catch (error) {
+          clearInterval(progressInterval);
+          throw error;
+        }
       };
       reader.readAsDataURL(file);
     } catch (error) {
       toast.error("파일 변환 중 오류가 발생했습니다.");
       console.error(error);
+      setConversionProgress(0);
     } finally {
       setIsConverting(false);
     }
@@ -84,7 +114,8 @@ export default function Home() {
   const handleDownloadImage = (imageUrl: string, pageNumber: number) => {
     const link = document.createElement("a");
     link.href = imageUrl;
-    link.download = `page-${pageNumber}.jpg`;
+    const ext = outputFormat === 'png' ? 'png' : 'jpg';
+    link.download = `page-${pageNumber}.${ext}`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -107,6 +138,10 @@ export default function Home() {
       console.error(error);
     }
   };
+
+  const filteredImages = convertedImages.filter(
+    (img) => img.pageNumber >= pageRangeStart && img.pageNumber <= pageRangeEnd
+  );
 
   if (authLoading) {
     return (
@@ -182,6 +217,41 @@ export default function Home() {
                   />
                   <p className="text-xs text-slate-500">높을수록 더 선명하지만 파일 크기가 커집니다</p>
                 </div>
+
+                {/* Advanced Options Toggle */}
+                <button
+                  onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
+                  className="flex items-center gap-2 text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors"
+                >
+                  <ChevronDown className={`w-4 h-4 transition-transform ${showAdvancedOptions ? 'rotate-180' : ''}`} />
+                  고급 옵션
+                </button>
+
+                {/* Advanced Options */}
+                {showAdvancedOptions && (
+                  <div className="space-y-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                    {/* Output Format */}
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-slate-700">출력 형식</label>
+                      <div className="flex gap-3">
+                        {(['jpg', 'png'] as const).map((format) => (
+                          <button
+                            key={format}
+                            onClick={() => setOutputFormat(format)}
+                            className={`flex-1 px-3 py-2 rounded-lg font-medium transition-all ${
+                              outputFormat === format
+                                ? 'bg-blue-600 text-white shadow-md'
+                                : 'bg-white text-slate-700 border border-slate-300 hover:border-slate-400'
+                            }`}
+                          >
+                            {format.toUpperCase()}
+                          </button>
+                        ))}
+                      </div>
+                      <p className="text-xs text-slate-500">JPG: 더 작은 파일 크기 | PNG: 투명도 지원</p>
+                    </div>
+                  </div>
+                )}
 
                 {/* Drag and Drop Area */}
                 <div
@@ -322,7 +392,7 @@ export default function Home() {
                     <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold">3</div>
                     <div>
                       <h3 className="font-semibold text-slate-900">변환 완료</h3>
-                      <p className="text-slate-600 text-sm">몇 초 후 모든 페이지가 JPG 이미지로 변환됩니다. 각 이미지를 개별 다운로드하거나 ZIP으로 일괄 다운로드하세요.</p>
+                      <p className="text-slate-600 text-sm">몇 초 후 모든 페이지가 이미지로 변환됩니다. 각 이미지를 개별 다운로드하거나 ZIP으로 일괄 다운로드하세요.</p>
                     </div>
                   </div>
                 </div>
@@ -333,59 +403,47 @@ export default function Home() {
             <section className="space-y-6">
               <div>
                 <h2 className="text-2xl font-bold text-slate-900 mb-4">이 도구의 장점</h2>
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-2 gap-4">
                   <Card className="border-0 shadow-md">
                     <CardHeader>
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <Lock className="w-5 h-5 text-green-600" />
-                        프라이버시 보호
-                      </CardTitle>
+                      <CardTitle className="text-base">브라우저에서 바로 변환</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-slate-600">
-                        파일이 서버에 저장되지 않으므로 기밀 문서나 개인 정보를 안전하게 처리할 수 있습니다.
+                        별도의 소프트웨어 설치가 필요 없습니다. 웹 브라우저만 있으면 어디서나 즉시 사용할 수 있습니다.
                       </p>
                     </CardContent>
                   </Card>
 
                   <Card className="border-0 shadow-md">
                     <CardHeader>
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <Zap className="w-5 h-5 text-blue-600" />
-                        빠른 속도
-                      </CardTitle>
+                      <CardTitle className="text-base">파일이 서버에 업로드되지 않음</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-slate-600">
-                        브라우저에서 직접 처리되므로 서버 대기 시간 없이 즉시 변환됩니다.
+                        모든 처리가 당신의 기기에서만 일어나므로 민감한 문서도 안전하게 변환할 수 있습니다.
                       </p>
                     </CardContent>
                   </Card>
 
                   <Card className="border-0 shadow-md">
                     <CardHeader>
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <FileImage className="w-5 h-5 text-purple-600" />
-                        고품질 출력
-                      </CardTitle>
+                      <CardTitle className="text-base">무료 및 무제한</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-slate-600">
-                        고해상도 JPG 이미지로 변환되며 화질을 자유롭게 조절할 수 있습니다.
+                        가입 없이 무료로 사용할 수 있으며, 변환 횟수나 파일 크기에 제한이 없습니다.
                       </p>
                     </CardContent>
                   </Card>
 
                   <Card className="border-0 shadow-md">
                     <CardHeader>
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <Smartphone className="w-5 h-5 text-indigo-600" />
-                        모든 기기 지원
-                      </CardTitle>
+                      <CardTitle className="text-base">고품질 출력</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-slate-600">
-                        데스크톱, 태블릿, 모바일 등 모든 기기에서 웹 브라우저로 사용 가능합니다.
+                        화질 조절 옵션으로 원하는 수준의 이미지를 생성할 수 있습니다.
                       </p>
                     </CardContent>
                   </Card>
@@ -398,11 +456,21 @@ export default function Home() {
               <div>
                 <h2 className="text-2xl font-bold text-slate-900 mb-4">활용 사례</h2>
                 <div className="space-y-3 text-slate-700">
-                  <p><strong>문서 공유:</strong> PDF 문서를 JPG로 변환하면 이메일이나 메신저로 쉽게 공유할 수 있으며, 모든 기기에서 열 수 있습니다.</p>
-                  <p><strong>이미지 편집:</strong> Photoshop이나 다른 이미지 편집 소프트웨어에서 더 쉽게 편집할 수 있는 형식으로 변환합니다.</p>
-                  <p><strong>SNS 업로드:</strong> 문서나 스캔본을 소셜 미디어에 공유할 때 JPG 형식이 더 호환성이 좋습니다.</p>
-                  <p><strong>웹 게시:</strong> 블로그나 웹사이트에 문서 내용을 이미지로 표시할 때 유용합니다.</p>
-                  <p><strong>아카이빙:</strong> 중요한 문서를 이미지로 변환하여 백업하고 보관합니다.</p>
+                  <p>
+                    <strong>문서 공유:</strong> PDF 문서를 이미지로 변환하여 SNS나 메신저에서 쉽게 공유할 수 있습니다.
+                  </p>
+                  <p>
+                    <strong>이미지 편집:</strong> 변환된 이미지를 포토샵이나 다른 이미지 편집 소프트웨어에서 편집할 수 있습니다.
+                  </p>
+                  <p>
+                    <strong>SNS 업로드:</strong> 인스타그램, 트위터 등 SNS에 PDF 내용을 이미지로 업로드할 수 있습니다.
+                  </p>
+                  <p>
+                    <strong>웹 게시:</strong> 웹사이트에 PDF 내용을 이미지로 표시할 수 있습니다.
+                  </p>
+                  <p>
+                    <strong>모바일 보기:</strong> 모바일 기기에서 PDF를 보기 어려울 때 이미지로 변환하여 쉽게 볼 수 있습니다.
+                  </p>
                 </div>
               </div>
             </section>
@@ -410,10 +478,7 @@ export default function Home() {
             {/* FAQ Section */}
             <section className="space-y-6">
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                  <HelpCircle className="w-6 h-6" />
-                  자주 묻는 질문 (FAQ)
-                </h2>
+                <h2 className="text-2xl font-bold text-slate-900 mb-4">자주 묻는 질문 (FAQ)</h2>
                 <div className="space-y-4">
                   <Card className="border-0 shadow-md">
                     <CardHeader>
@@ -502,17 +567,6 @@ export default function Home() {
                       </p>
                     </CardContent>
                   </Card>
-
-                  <Card className="border-0 shadow-md">
-                    <CardHeader>
-                      <CardTitle className="text-base">변환 속도는 어느 정도인가요?</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-slate-600">
-                        대부분의 PDF는 몇 초 내에 변환됩니다. 파일 크기와 페이지 수에 따라 다르지만, 일반적으로 매우 빠릅니다.
-                      </p>
-                    </CardContent>
-                  </Card>
                 </div>
               </div>
             </section>
@@ -540,6 +594,37 @@ export default function Home() {
               </Button>
             </div>
 
+            {/* Page Range Filter */}
+            {totalPages > 0 && (
+              <Card className="border-0 shadow-md bg-blue-50">
+                <CardContent className="pt-6">
+                  <div className="space-y-3">
+                    <label className="text-sm font-semibold text-slate-700">페이지 범위 선택</label>
+                    <div className="flex gap-2 items-center flex-wrap">
+                      <input
+                        type="number"
+                        min="1"
+                        max={totalPages}
+                        value={pageRangeStart}
+                        onChange={(e) => setPageRangeStart(Math.max(1, parseInt(e.target.value) || 1))}
+                        className="w-20 px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                      />
+                      <span className="text-slate-600">~</span>
+                      <input
+                        type="number"
+                        min="1"
+                        max={totalPages}
+                        value={pageRangeEnd}
+                        onChange={(e) => setPageRangeEnd(Math.min(totalPages, parseInt(e.target.value) || totalPages))}
+                        className="w-20 px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                      />
+                      <span className="text-xs text-slate-500 ml-auto">표시: {filteredImages.length} / {totalPages}페이지</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Download Buttons */}
             <div className="flex gap-3">
               <Button
@@ -565,7 +650,7 @@ export default function Home() {
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-slate-900">이미지 미리보기</h3>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {convertedImages.map((image) => (
+                {filteredImages.map((image) => (
                   <Card key={image.pageNumber} className="border-0 shadow-md hover:shadow-lg transition-all overflow-hidden group">
                     <div className="relative bg-slate-100 aspect-[4/5] overflow-hidden">
                       <img
