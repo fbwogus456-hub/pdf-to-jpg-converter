@@ -1,0 +1,323 @@
+export type Language = 'ko' | 'en';
+
+export const translations = {
+  ko: {
+    // Header
+    header: {
+      title: 'PDF to JPG',
+      subtitle: '무료 온라인 변환 도구',
+    },
+    // Privacy Badges
+    badges: {
+      browserProcessing: '100% 브라우저 처리',
+      noUpload: '업로드 없음',
+      completePrivacy: '완전 비공개',
+    },
+    // Upload Card
+    upload: {
+      title: '파일이 서버에 업로드되지 않는 PDF to JPG 변환기',
+      description: '브라우저에서만 처리되는 완전히 안전한 변환. 가입 없이 무료로 사용하세요',
+      qualityLabel: '이미지 화질',
+      qualityHint: '높을수록 더 선명하지만 파일 크기가 커집니다',
+      advancedOptions: '고급 옵션',
+      outputFormat: '출력 형식',
+      formatHint: 'JPG: 더 작은 파일 크기 | PNG: 투명도 지원',
+      dragDropTitle: 'PDF 파일을 드래그하세요',
+      dragDropAlt: '여기에 놓으세요',
+      dragDropHint: '또는 아래 버튼으로 선택',
+      selectButton: '파일 선택',
+      converting: '변환 중...',
+      uploadError: 'PDF 파일만 업로드할 수 있습니다.',
+      fileSizeError: '파일 크기가 50MB를 초과할 수 없습니다.',
+      conversionError: '파일 변환 중 오류가 발생했습니다.',
+    },
+    // Features
+    features: {
+      fastConversion: '빠른 변환',
+      fastConversionDesc: '브라우저에서 즉시 변환되어 빠르고 효율적입니다',
+      completeSafety: '완전히 안전함',
+      completeSafetyDesc: '파일이 서버에 업로드되지 않으며 100% 로컬에서 처리됩니다',
+      freeUsage: '무료 사용',
+      freeUsageDesc: '가입 없이 무제한 무료로 사용할 수 있습니다',
+    },
+    // About Section
+    about: {
+      title: 'PDF to JPG 변환이란?',
+      para1: 'PDF to JPG는 PDF 문서를 고품질의 JPG 이미지로 변환하는 온라인 도구입니다. 복잡한 소프트웨어 설치 없이 웹 브라우저에서 바로 사용할 수 있으며, 모든 PDF 페이지를 개별 이미지로 변환합니다.',
+      para2: '이 도구는 최신 웹 기술을 사용하여 브라우저 내에서 변환을 처리합니다. 즉, 당신의 파일은 절대 우리 서버에 업로드되지 않으며, 모든 처리가 당신의 기기에서만 일어납니다. 이는 민감한 문서나 기밀 자료를 다룰 때 특히 중요합니다.',
+      para3: '변환된 이미지는 높은 해상도로 생성되며, 화질 슬라이더를 통해 원하는 수준으로 조절할 수 있습니다. 모든 이미지를 개별적으로 다운로드하거나 ZIP 파일로 한 번에 다운로드할 수 있습니다.',
+    },
+    // How to Use
+    howToUse: {
+      title: '사용 방법',
+      step1Title: 'PDF 파일 선택',
+      step1Desc: '위의 업로드 영역에 PDF 파일을 드래그하거나 "파일 선택" 버튼을 클릭하세요.',
+      step2Title: '화질 설정',
+      step2Desc: '슬라이더를 조절하여 원하는 이미지 화질을 선택하세요. 높을수록 선명하지만 파일 크기가 커집니다.',
+      step3Title: '변환 완료',
+      step3Desc: '몇 초 후 모든 페이지가 이미지로 변환됩니다. 각 이미지를 개별 다운로드하거나 ZIP으로 일괄 다운로드하세요.',
+    },
+    // Benefits
+    benefits: {
+      title: '이 도구의 장점',
+      browserConversion: '브라우저에서 바로 변환',
+      browserConversionDesc: '별도의 소프트웨어 설치가 필요 없습니다. 웹 브라우저만 있으면 어디서나 즉시 사용할 수 있습니다.',
+      noServerUpload: '파일이 서버에 업로드되지 않음',
+      noServerUploadDesc: '모든 처리가 당신의 기기에서만 일어나므로 민감한 문서도 안전하게 변환할 수 있습니다.',
+      freeUnlimited: '무료 및 무제한',
+      freeUnlimitedDesc: '가입 없이 무료로 사용할 수 있으며, 변환 횟수나 파일 크기에 제한이 없습니다.',
+      highQuality: '고품질 출력',
+      highQualityDesc: '화질 조절 옵션으로 원하는 수준의 이미지를 생성할 수 있습니다.',
+    },
+    // Use Cases
+    useCases: {
+      title: '활용 사례',
+      documentSharing: '문서 공유: PDF 문서를 이미지로 변환하여 SNS나 메신저에서 쉽게 공유할 수 있습니다.',
+      imageEditing: '이미지 편집: 변환된 이미지를 포토샵이나 다른 이미지 편집 소프트웨어에서 편집할 수 있습니다.',
+      socialUpload: 'SNS 업로드: 인스타그램, 트위터 등 SNS에 PDF 내용을 이미지로 업로드할 수 있습니다.',
+      webPosting: '웹 게시: 웹사이트에 PDF 내용을 이미지로 표시할 수 있습니다.',
+      mobileViewing: '모바일 보기: 모바일 기기에서 PDF를 보기 어려울 때 이미지로 변환하여 쉽게 볼 수 있습니다.',
+    },
+    // FAQ
+    faq: {
+      title: '자주 묻는 질문 (FAQ)',
+      q1: '파일 크기 제한이 있나요?',
+      a1: '현재 최대 50MB까지의 PDF 파일을 변환할 수 있습니다. 대부분의 일반적인 문서는 이 제한 내에서 처리됩니다.',
+      q2: '변환 후 파일이 얼마나 오래 보관되나요?',
+      a2: '변환된 이미지는 브라우저 메모리에서만 생성되며, 페이지를 닫으면 즉시 사라집니다. 어디에도 저장되지 않습니다. 필요한 이미지는 변환 직후 다운로드하시기 바랍니다.',
+      q3: '왜 브라우저 처리가 더 안전한가요?',
+      a3: '서버 업로드 방식은 파일이 서버에 저장되고 처리되는 동안 노출될 수 있습니다. 반면 브라우저 처리는 파일이 당신의 기기에서만 처리되고, 인터넷으로 전송되지 않습니다. 민감한 문서나 기밀 자료도 완전히 안전하게 변환할 수 있습니다.',
+      q4: '화질 설정은 어떻게 선택해야 하나요?',
+      a4: '일반적인 용도는 70~85%를 추천합니다. 고품질이 필요하면 90% 이상, 파일 크기를 줄이고 싶으면 50~60%를 선택하세요.',
+      q5: '내 파일이 안전한가요?',
+      a5: '네, 완전히 안전합니다. 모든 처리가 당신의 브라우저에서만 일어나며, 파일이 우리 서버에 업로드되거나 저장되지 않습니다. 자세한 내용은 개인정보처리방침을 참고하세요.',
+      q6: '어떤 PDF 형식을 지원하나요?',
+      a6: '표준 PDF 형식을 모두 지원합니다. 텍스트 기반 PDF, 스캔본, 이미지 포함 PDF 등 대부분의 PDF 파일을 변환할 수 있습니다.',
+      q7: '모바일에서도 사용할 수 있나요?',
+      a7: '네, 모바일 기기에서도 완벽하게 작동합니다. 스마트폰이나 태블릿의 웹 브라우저에서 바로 사용할 수 있습니다.',
+      q8: '가입이 필요한가요?',
+      a8: '아니요, 가입 없이 누구나 무료로 사용할 수 있습니다. 추가 기능이나 고급 옵션도 모두 무료입니다.',
+    },
+    // Results
+    results: {
+      conversionComplete: '변환 완료',
+      imagesReady: '개의 이미지가 준비되었습니다',
+      convertNewFile: '새 파일 변환',
+      pageRangeLabel: '페이지 범위 선택',
+      showing: '표시:',
+      of: '/',
+      downloadAll: '모두 ZIP으로 다운로드',
+      preparing: '준비 중...',
+      imagePreview: '이미지 미리보기',
+      page: '페이지',
+      downloadSuccess: 'ZIP 파일이 다운로드되었습니다.',
+      downloadError: 'ZIP 파일 생성 중 오류가 발생했습니다.',
+    },
+    // Footer
+    footer: {
+      copyright: '© 2026 PDF to JPG. 모든 권리 보유.',
+      privacy: '개인정보처리방침',
+      terms: '이용약관',
+      contact: '문의',
+    },
+    // Policy Pages
+    policy: {
+      privacy: {
+        title: '개인정보처리방침',
+        intro: '이 개인정보처리방침은 PDF to JPG 서비스("서비스")가 사용자의 개인정보를 어떻게 처리하는지 설명합니다.',
+        dataProcessing: '데이터 처리 방식',
+        dataProcessingDesc: '모든 PDF 파일과 변환된 이미지는 당신의 브라우저에서만 처리됩니다. 파일이 우리 서버에 업로드되거나 저장되지 않습니다.',
+        advertising: '광고',
+        advertisingDesc: '이 서비스는 Google AdSense를 통해 광고를 표시합니다. Google은 당신의 관심사에 맞춘 광고를 제공하기 위해 쿠키를 사용할 수 있습니다.',
+        cookies: '쿠키',
+        cookiesDesc: '우리는 서비스 개선을 위해 쿠키를 사용할 수 있습니다. 브라우저 설정에서 쿠키를 비활성화할 수 있습니다.',
+        contact: '문의',
+        contactDesc: '개인정보 처리에 대한 질문이 있으시면 문의 페이지를 통해 연락주세요.',
+      },
+      terms: {
+        title: '이용약관',
+        intro: '이 이용약관은 PDF to JPG 서비스의 사용 조건을 설명합니다.',
+        usage: '서비스 사용',
+        usageDesc: '이 서비스는 개인적인 용도로만 사용할 수 있습니다. 상업적 목적으로 사용하려면 별도의 허가가 필요합니다.',
+        limitations: '제한사항',
+        limitationsDesc: '최대 50MB의 PDF 파일을 변환할 수 있습니다. 서비스는 "있는 그대로" 제공되며, 특정 목적에 대한 보증은 없습니다.',
+        liability: '책임 제한',
+        liabilityDesc: '우리는 서비스 사용으로 인한 직접적, 간접적 손해에 대해 책임을 지지 않습니다.',
+        changes: '약관 변경',
+        changesDesc: '우리는 언제든지 이용약관을 변경할 수 있습니다. 변경사항은 이 페이지에 게시됩니다.',
+      },
+      contact: {
+        title: '문의',
+        intro: '질문이나 제안이 있으신가요? 아래 방법으로 연락주세요.',
+        email: '이메일',
+        emailDesc: 'support@pdftojpg.com으로 이메일을 보내주세요.',
+        response: '일반적으로 24시간 내에 답변드립니다.',
+      },
+    },
+  },
+  en: {
+    // Header
+    header: {
+      title: 'PDF to JPG',
+      subtitle: 'Free Online Conversion Tool',
+    },
+    // Privacy Badges
+    badges: {
+      browserProcessing: '100% Browser Processing',
+      noUpload: 'No Upload',
+      completePrivacy: 'Complete Privacy',
+    },
+    // Upload Card
+    upload: {
+      title: 'PDF to JPG Converter - Files Never Uploaded to Server',
+      description: 'Completely safe conversion processed only in your browser. Free to use, no registration required',
+      qualityLabel: 'Image Quality',
+      qualityHint: 'Higher values produce clearer images but larger file sizes',
+      advancedOptions: 'Advanced Options',
+      outputFormat: 'Output Format',
+      formatHint: 'JPG: Smaller file size | PNG: Supports transparency',
+      dragDropTitle: 'Drag PDF files here',
+      dragDropAlt: 'Drop here',
+      dragDropHint: 'Or select using the button below',
+      selectButton: 'Select File',
+      converting: 'Converting...',
+      uploadError: 'Only PDF files can be uploaded.',
+      fileSizeError: 'File size cannot exceed 50MB.',
+      conversionError: 'An error occurred during file conversion.',
+    },
+    // Features
+    features: {
+      fastConversion: 'Fast Conversion',
+      fastConversionDesc: 'Instant conversion in your browser, fast and efficient',
+      completeSafety: 'Completely Safe',
+      completeSafetyDesc: 'Files are not uploaded to server and processed 100% locally',
+      freeUsage: 'Free Usage',
+      freeUsageDesc: 'Use unlimited times for free without registration',
+    },
+    // About Section
+    about: {
+      title: 'What is PDF to JPG Conversion?',
+      para1: 'PDF to JPG is an online tool that converts PDF documents into high-quality JPG images. You can use it directly in your web browser without installing complex software, and it converts all PDF pages into individual images.',
+      para2: 'This tool uses modern web technology to process conversions within your browser. This means your files are never uploaded to our server, and all processing happens only on your device. This is especially important when handling sensitive documents or confidential materials.',
+      para3: 'Converted images are generated at high resolution, and you can adjust the quality level through the quality slider. You can download all images individually or download them all at once as a ZIP file.',
+    },
+    // How to Use
+    howToUse: {
+      title: 'How to Use',
+      step1Title: 'Select PDF File',
+      step1Desc: 'Drag a PDF file to the upload area above or click the "Select File" button.',
+      step2Title: 'Set Quality',
+      step2Desc: 'Adjust the slider to select the desired image quality. Higher values produce clearer images but larger file sizes.',
+      step3Title: 'Conversion Complete',
+      step3Desc: 'After a few seconds, all pages will be converted to images. You can download each image individually or download all as a ZIP file.',
+    },
+    // Benefits
+    benefits: {
+      title: 'Benefits of This Tool',
+      browserConversion: 'Convert Directly in Browser',
+      browserConversionDesc: 'No need to install additional software. You can use it instantly anywhere with just a web browser.',
+      noServerUpload: 'Files Not Uploaded to Server',
+      noServerUploadDesc: 'All processing happens only on your device, so you can safely convert sensitive documents.',
+      freeUnlimited: 'Free and Unlimited',
+      freeUnlimitedDesc: 'Use for free without registration, with no limits on conversion times or file sizes.',
+      highQuality: 'High Quality Output',
+      highQualityDesc: 'Generate images at your desired quality level with quality adjustment options.',
+    },
+    // Use Cases
+    useCases: {
+      title: 'Use Cases',
+      documentSharing: 'Document Sharing: Convert PDF documents to images and easily share them on social media or messaging apps.',
+      imageEditing: 'Image Editing: Edit converted images in Photoshop or other image editing software.',
+      socialUpload: 'Social Media Upload: Upload PDF content as images to Instagram, Twitter, and other social platforms.',
+      webPosting: 'Web Publishing: Display PDF content as images on your website.',
+      mobileViewing: 'Mobile Viewing: Convert PDFs to images for easy viewing on mobile devices when PDF viewing is difficult.',
+    },
+    // FAQ
+    faq: {
+      title: 'Frequently Asked Questions (FAQ)',
+      q1: 'Is there a file size limit?',
+      a1: 'Currently, you can convert PDF files up to 50MB. Most common documents are processed within this limit.',
+      q2: 'How long are converted files stored?',
+      a2: 'Converted images are generated only in browser memory and disappear immediately when you close the page. They are not stored anywhere. Please download the images you need right after conversion.',
+      q3: 'Why is browser processing more secure?',
+      a3: 'Server upload methods can expose files while they are stored and processed on the server. Browser processing, on the other hand, only processes files on your device and does not transmit them over the internet. You can safely convert sensitive documents and confidential materials.',
+      q4: 'How should I choose the quality setting?',
+      a4: 'For general use, we recommend 70-85%. Choose 90% or higher for high quality, or 50-60% if you want to reduce file size.',
+      q5: 'Is my file safe?',
+      a5: 'Yes, completely safe. All processing happens only in your browser, and files are not uploaded or stored on our server. See the Privacy Policy for more details.',
+      q6: 'What PDF formats are supported?',
+      a6: 'All standard PDF formats are supported. Most PDF files including text-based PDFs, scans, and image-containing PDFs can be converted.',
+      q7: 'Can I use it on mobile?',
+      a7: 'Yes, it works perfectly on mobile devices. You can use it directly in your smartphone or tablet web browser.',
+      q8: 'Do I need to register?',
+      a8: 'No, anyone can use it for free without registration. All additional features and advanced options are also free.',
+    },
+    // Results
+    results: {
+      conversionComplete: 'Conversion Complete',
+      imagesReady: 'images are ready',
+      convertNewFile: 'Convert New File',
+      pageRangeLabel: 'Select Page Range',
+      showing: 'Showing:',
+      of: '/',
+      downloadAll: 'Download All as ZIP',
+      preparing: 'Preparing...',
+      imagePreview: 'Image Preview',
+      page: 'Page',
+      downloadSuccess: 'ZIP file has been downloaded.',
+      downloadError: 'An error occurred while creating the ZIP file.',
+    },
+    // Footer
+    footer: {
+      copyright: '© 2026 PDF to JPG. All rights reserved.',
+      privacy: 'Privacy Policy',
+      terms: 'Terms of Service',
+      contact: 'Contact',
+    },
+    // Policy Pages
+    policy: {
+      privacy: {
+        title: 'Privacy Policy',
+        intro: 'This Privacy Policy explains how the PDF to JPG service ("Service") handles your personal information.',
+        dataProcessing: 'Data Processing Method',
+        dataProcessingDesc: 'All PDF files and converted images are processed only in your browser. Files are not uploaded to or stored on our server.',
+        advertising: 'Advertising',
+        advertisingDesc: 'This service displays advertisements through Google AdSense. Google may use cookies to provide ads tailored to your interests.',
+        cookies: 'Cookies',
+        cookiesDesc: 'We may use cookies to improve the service. You can disable cookies in your browser settings.',
+        contact: 'Contact',
+        contactDesc: 'If you have questions about personal information processing, please contact us through the Contact page.',
+      },
+      terms: {
+        title: 'Terms of Service',
+        intro: 'These Terms of Service explain the conditions for using the PDF to JPG service.',
+        usage: 'Service Usage',
+        usageDesc: 'This service can only be used for personal purposes. Commercial use requires separate permission.',
+        limitations: 'Limitations',
+        limitationsDesc: 'You can convert PDF files up to 50MB. The service is provided "as is" and there are no warranties for specific purposes.',
+        liability: 'Limitation of Liability',
+        liabilityDesc: 'We are not responsible for any direct or indirect damages resulting from the use of this service.',
+        changes: 'Changes to Terms',
+        changesDesc: 'We may change these Terms of Service at any time. Changes will be posted on this page.',
+      },
+      contact: {
+        title: 'Contact',
+        intro: 'Have questions or suggestions? Contact us using the methods below.',
+        email: 'Email',
+        emailDesc: 'Send an email to support@pdftojpg.com.',
+        response: 'We typically respond within 24 hours.',
+      },
+    },
+  },
+};
+
+export function getTranslation(lang: Language, path: string): string {
+  const keys = path.split('.');
+  let value: any = translations[lang];
+  
+  for (const key of keys) {
+    value = value?.[key];
+  }
+  
+  return value || path;
+}
