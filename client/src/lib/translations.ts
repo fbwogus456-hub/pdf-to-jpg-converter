@@ -138,12 +138,34 @@ export const translations = {
       downloadSuccess: 'ZIP 파일이 다운로드되었습니다.',
       downloadError: 'ZIP 파일 생성 중 오류가 발생했습니다.',
     },
+    // JPG to PDF
+    jpgToPdf: {
+      title: 'JPG to PDF 변환',
+      description: '여러 JPG 이미지를 하나의 PDF로 병합하세요. 순서 변경 가능, 브라우저에서만 처리됩니다.',
+      uploadTitle: '이미지를 여기에 드래그하세요',
+      uploadHint: '또는 아래 버튼으로 선택 (JPG, PNG 지원)',
+      selectButton: '이미지 선택',
+      addMore: '더 추가',
+      reorder: '순서 변경',
+      createPdf: 'PDF 생성',
+      downloadPdf: 'PDF 다운로드',
+      imageCount: '개의 이미지',
+      dragToReorder: '드래그하여 순서 변경',
+      removeImage: '제거',
+      invalidFile: '이미지 파일만 업로드할 수 있습니다.',
+      fileSizeError: '파일 크기가 10MB를 초과할 수 없습니다.',
+      conversionError: '이미지 변환 중 오류가 발생했습니다.',
+      pdfReady: 'PDF가 준비되었습니다.',
+      convertMore: '더 변환',
+    },
     // Footer
     footer: {
       copyright: '© 2026 PDF to JPG. 모든 권리 보유.',
       privacy: '개인정보처리방침',
       terms: '이용약관',
       contact: '문의',
+      jpgToPdf: 'JPG to PDF',
+      pdfToJpg: 'PDF to JPG',
     },
     // Policy Pages
     policy: {
@@ -317,12 +339,34 @@ export const translations = {
       downloadSuccess: 'ZIP file downloaded successfully.',
       downloadError: 'An error occurred while creating the ZIP file.',
     },
+    // JPG to PDF
+    jpgToPdf: {
+      title: 'JPG to PDF Conversion',
+      description: 'Merge multiple JPG images into a single PDF. Reorder images, process only in your browser.',
+      uploadTitle: 'Drag images here',
+      uploadHint: 'Or select using the button below (JPG, PNG supported)',
+      selectButton: 'Select Images',
+      addMore: 'Add More',
+      reorder: 'Reorder',
+      createPdf: 'Create PDF',
+      downloadPdf: 'Download PDF',
+      imageCount: 'images',
+      dragToReorder: 'Drag to reorder images',
+      removeImage: 'Remove',
+      invalidFile: 'Only image files can be uploaded.',
+      fileSizeError: 'File size cannot exceed 10MB.',
+      conversionError: 'An error occurred during image conversion.',
+      pdfReady: 'PDF is ready.',
+      convertMore: 'Convert More',
+    },
     // Footer
     footer: {
       copyright: '© 2026 PDF to JPG. All rights reserved.',
       privacy: 'Privacy Policy',
       terms: 'Terms of Service',
       contact: 'Contact',
+      jpgToPdf: 'JPG to PDF',
+      pdfToJpg: 'PDF to JPG',
     },
     // Policy Pages
     policy: {

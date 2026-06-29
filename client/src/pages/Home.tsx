@@ -519,7 +519,11 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-4 py-12">
           <div className="flex flex-col md:flex-row justify-between items-center gap-8">
             <p className="text-sm">{t.footer.copyright}</p>
-            <div className="flex gap-6">
+            <div className="flex gap-6 flex-wrap justify-center">
+              <Link href="/jpg-to-pdf" className="text-sm text-slate-400 hover:text-slate-200 transition-colors">
+                {t.footer.jpgToPdf}
+              </Link>
+              <span className="text-slate-600">|</span>
               <Link href="/privacy" className="text-sm text-slate-400 hover:text-slate-200 transition-colors">
                 {t.footer.privacy}
               </Link>
