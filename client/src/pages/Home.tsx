@@ -5,8 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Slider } from "@/components/ui/slider";
 import { Spinner } from "@/components/ui/spinner";
 import { trpc } from "@/lib/trpc";
-import { Upload, Download, FileImage, Zap, CheckCircle2 } from "lucide-react";
+import { Upload, Download, FileImage, Zap, CheckCircle2, Lock, Smartphone, HelpCircle } from "lucide-react";
 import { toast } from "sonner";
+import { Link } from "wouter";
 
 interface ConvertedImage {
   pageNumber: number;
@@ -126,7 +127,7 @@ export default function Home() {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-slate-900">PDF to JPG</h1>
-              <p className="text-sm text-slate-500">우아한 변환 도구</p>
+              <p className="text-sm text-slate-500">무료 온라인 변환 도구</p>
             </div>
           </div>
           {user && (
@@ -141,12 +142,12 @@ export default function Home() {
       <main className="max-w-6xl mx-auto px-4 py-12">
         {convertedImages.length === 0 ? (
           // Upload Section
-          <div className="space-y-8">
+          <div className="space-y-12">
             {/* Upload Card */}
             <Card className="border-0 shadow-lg">
               <CardHeader className="pb-4">
-                <CardTitle className="text-2xl">PDF 파일 변환</CardTitle>
-                <CardDescription>PDF 파일을 JPG 이미지로 변환하세요</CardDescription>
+                <CardTitle className="text-3xl">PDF를 JPG로 변환</CardTitle>
+                <CardDescription>가입 없이 무료로 PDF 파일을 고품질 JPG 이미지로 변환하세요</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Quality Slider */}
@@ -235,19 +236,19 @@ export default function Home() {
                   <CardTitle className="text-lg">빠른 변환</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-slate-600">고속 처리로 빠르게 이미지로 변환됩니다</p>
+                  <p className="text-sm text-slate-600">브라우저에서 즉시 변환되어 빠르고 효율적입니다</p>
                 </CardContent>
               </Card>
 
               <Card className="border-0 shadow-md hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mb-3">
-                    <FileImage className="w-5 h-5 text-green-600" />
+                    <Lock className="w-5 h-5 text-green-600" />
                   </div>
-                  <CardTitle className="text-lg">화질 조절</CardTitle>
+                  <CardTitle className="text-lg">완전히 안전함</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-slate-600">1~100% 범위에서 원하는 화질을 선택</p>
+                  <p className="text-sm text-slate-600">파일이 서버에 업로드되지 않으며 100% 로컬에서 처리됩니다</p>
                 </CardContent>
               </Card>
 
@@ -256,13 +257,238 @@ export default function Home() {
                   <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-3">
                     <Download className="w-5 h-5 text-purple-600" />
                   </div>
-                  <CardTitle className="text-lg">일괄 다운로드</CardTitle>
+                  <CardTitle className="text-lg">무료 사용</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-slate-600">모든 이미지를 ZIP으로 한 번에 다운로드</p>
+                  <p className="text-sm text-slate-600">가입 없이 무제한 무료로 사용할 수 있습니다</p>
                 </CardContent>
               </Card>
             </div>
+
+            {/* About Section */}
+            <section className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold text-slate-900 mb-4">PDF to JPG 변환이란?</h2>
+                <div className="space-y-4 text-slate-700">
+                  <p>
+                    PDF to JPG는 PDF 문서를 고품질의 JPG 이미지로 변환하는 온라인 도구입니다. 복잡한 소프트웨어 설치 없이 웹 브라우저에서 바로 사용할 수 있으며, 모든 PDF 페이지를 개별 이미지로 변환합니다.
+                  </p>
+                  <p>
+                    이 도구는 최신 웹 기술을 사용하여 브라우저 내에서 변환을 처리합니다. 즉, 당신의 파일은 절대 우리 서버에 업로드되지 않으며, 모든 처리가 당신의 기기에서만 일어납니다. 이는 민감한 문서나 기밀 자료를 다룰 때 특히 중요합니다.
+                  </p>
+                  <p>
+                    변환된 이미지는 높은 해상도로 생성되며, 화질 슬라이더를 통해 원하는 수준으로 조절할 수 있습니다. 모든 이미지를 개별적으로 다운로드하거나 ZIP 파일로 한 번에 다운로드할 수 있습니다.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            {/* How to Use Section */}
+            <section className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold text-slate-900 mb-4">사용 방법</h2>
+                <div className="space-y-3">
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold">1</div>
+                    <div>
+                      <h3 className="font-semibold text-slate-900">PDF 파일 선택</h3>
+                      <p className="text-slate-600 text-sm">위의 업로드 영역에 PDF 파일을 드래그하거나 "파일 선택" 버튼을 클릭하세요.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold">2</div>
+                    <div>
+                      <h3 className="font-semibold text-slate-900">화질 설정</h3>
+                      <p className="text-slate-600 text-sm">슬라이더를 조절하여 원하는 이미지 화질을 선택하세요. 높을수록 선명하지만 파일 크기가 커집니다.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold">3</div>
+                    <div>
+                      <h3 className="font-semibold text-slate-900">변환 완료</h3>
+                      <p className="text-slate-600 text-sm">몇 초 후 모든 페이지가 JPG 이미지로 변환됩니다. 각 이미지를 개별 다운로드하거나 ZIP으로 일괄 다운로드하세요.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Benefits Section */}
+            <section className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold text-slate-900 mb-4">이 도구의 장점</h2>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <Card className="border-0 shadow-md">
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <Lock className="w-5 h-5 text-green-600" />
+                        프라이버시 보호
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-slate-600">
+                        파일이 서버에 저장되지 않으므로 기밀 문서나 개인 정보를 안전하게 처리할 수 있습니다.
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-0 shadow-md">
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <Zap className="w-5 h-5 text-blue-600" />
+                        빠른 속도
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-slate-600">
+                        브라우저에서 직접 처리되므로 서버 대기 시간 없이 즉시 변환됩니다.
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-0 shadow-md">
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <FileImage className="w-5 h-5 text-purple-600" />
+                        고품질 출력
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-slate-600">
+                        고해상도 JPG 이미지로 변환되며 화질을 자유롭게 조절할 수 있습니다.
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-0 shadow-md">
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <Smartphone className="w-5 h-5 text-indigo-600" />
+                        모든 기기 지원
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-slate-600">
+                        데스크톱, 태블릿, 모바일 등 모든 기기에서 웹 브라우저로 사용 가능합니다.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </section>
+
+            {/* Use Cases Section */}
+            <section className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold text-slate-900 mb-4">활용 사례</h2>
+                <div className="space-y-3 text-slate-700">
+                  <p><strong>문서 공유:</strong> PDF 문서를 JPG로 변환하면 이메일이나 메신저로 쉽게 공유할 수 있으며, 모든 기기에서 열 수 있습니다.</p>
+                  <p><strong>이미지 편집:</strong> Photoshop이나 다른 이미지 편집 소프트웨어에서 더 쉽게 편집할 수 있는 형식으로 변환합니다.</p>
+                  <p><strong>SNS 업로드:</strong> 문서나 스캔본을 소셜 미디어에 공유할 때 JPG 형식이 더 호환성이 좋습니다.</p>
+                  <p><strong>웹 게시:</strong> 블로그나 웹사이트에 문서 내용을 이미지로 표시할 때 유용합니다.</p>
+                  <p><strong>아카이빙:</strong> 중요한 문서를 이미지로 변환하여 백업하고 보관합니다.</p>
+                </div>
+              </div>
+            </section>
+
+            {/* FAQ Section */}
+            <section className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                  <HelpCircle className="w-6 h-6" />
+                  자주 묻는 질문 (FAQ)
+                </h2>
+                <div className="space-y-4">
+                  <Card className="border-0 shadow-md">
+                    <CardHeader>
+                      <CardTitle className="text-base">파일 크기 제한이 있나요?</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-slate-600">
+                        현재 최대 50MB까지의 PDF 파일을 변환할 수 있습니다. 대부분의 일반적인 문서는 이 제한 내에서 처리됩니다.
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-0 shadow-md">
+                    <CardHeader>
+                      <CardTitle className="text-base">변환 후 파일이 얼마나 오래 보관되나요?</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-slate-600">
+                        변환된 이미지는 임시로 저장되며, 일정 시간 후 자동으로 삭제됩니다. 필요한 이미지는 변환 직후 다운로드하시기 바랍니다.
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-0 shadow-md">
+                    <CardHeader>
+                      <CardTitle className="text-base">화질 설정은 어떻게 선택해야 하나요?</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-slate-600">
+                        일반적인 용도는 70~85%를 추천합니다. 고품질이 필요하면 90% 이상, 파일 크기를 줄이고 싶으면 50~60%를 선택하세요.
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-0 shadow-md">
+                    <CardHeader>
+                      <CardTitle className="text-base">내 파일이 안전한가요?</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-slate-600">
+                        네, 완전히 안전합니다. 모든 처리가 당신의 브라우저에서만 일어나며, 파일이 우리 서버에 업로드되거나 저장되지 않습니다. 자세한 내용은 개인정보처리방침을 참고하세요.
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-0 shadow-md">
+                    <CardHeader>
+                      <CardTitle className="text-base">어떤 PDF 형식을 지원하나요?</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-slate-600">
+                        표준 PDF 형식을 모두 지원합니다. 텍스트 기반 PDF, 스캔본, 이미지 포함 PDF 등 대부분의 PDF 파일을 변환할 수 있습니다.
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-0 shadow-md">
+                    <CardHeader>
+                      <CardTitle className="text-base">모바일에서도 사용할 수 있나요?</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-slate-600">
+                        네, 모바일 기기에서도 완벽하게 작동합니다. 스마트폰이나 태블릿의 웹 브라우저에서 바로 사용할 수 있습니다.
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-0 shadow-md">
+                    <CardHeader>
+                      <CardTitle className="text-base">가입이 필요한가요?</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-slate-600">
+                        아니요, 가입 없이 누구나 무료로 사용할 수 있습니다. 추가 기능이나 고급 옵션도 모두 무료입니다.
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-0 shadow-md">
+                    <CardHeader>
+                      <CardTitle className="text-base">변환 속도는 어느 정도인가요?</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-slate-600">
+                        대부분의 PDF는 몇 초 내에 변환됩니다. 파일 크기와 페이지 수에 따라 다르지만, 일반적으로 매우 빠릅니다.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </section>
           </div>
         ) : (
           // Results Section
@@ -344,6 +570,26 @@ export default function Home() {
           </div>
         )}
       </main>
+
+      {/* Footer */}
+      <footer className="border-t border-slate-200/50 bg-slate-50/50 backdrop-blur-sm mt-16">
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-sm text-slate-600">© 2026 PDF to JPG. 모든 권리 보유.</p>
+            <div className="flex gap-6 text-sm">
+              <Link href="/privacy" className="text-slate-600 hover:text-slate-900 transition-colors">
+                개인정보처리방침
+              </Link>
+              <Link href="/terms" className="text-slate-600 hover:text-slate-900 transition-colors">
+                이용약관
+              </Link>
+              <Link href="/contact" className="text-slate-600 hover:text-slate-900 transition-colors">
+                문의
+              </Link>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
