@@ -78,6 +78,31 @@ export const translations = {
       webPosting: '웹 게시: 웹사이트에 PDF 내용을 이미지로 표시할 수 있습니다.',
       mobileViewing: '모바일 보기: 모바일 기기에서 PDF를 보기 어려울 때 이미지로 변환하여 쉽게 볼 수 있습니다.',
     },
+    // Comparison Section
+    comparison: {
+      title: '왜 이 도구를 선택해야 할까요?',
+      message: '많은 온라인 PDF 변환 도구는 파일을 서버에 업로드하지만, 이 도구는 그렇지 않습니다 — 파일이 당신의 기기를 떠나지 않습니다.',
+      tableTitle: '일반적인 온라인 도구와의 비교',
+      headers: {
+        feature: '기능',
+        general: '일반적인 온라인 도구',
+        thisTool: '이 도구',
+      },
+      features: {
+        serverUpload: '서버 업로드',
+        dailyLimit: '일일 사용 제한',
+        registration: '가입 필요',
+        cost: '비용',
+      },
+      values: {
+        yes: '있음',
+        no: '없음',
+        required: '필요',
+        notRequired: '불필요',
+        partial: '부분 유료',
+        free: '완전 무료',
+      },
+    },
     // FAQ
     faq: {
       title: '자주 묻는 질문 (FAQ)',
@@ -232,6 +257,31 @@ export const translations = {
       webPosting: 'Web Publishing: Display PDF content as images on your website.',
       mobileViewing: 'Mobile Viewing: Convert PDFs to images for easy viewing on mobile devices when PDF viewing is difficult.',
     },
+    // Comparison Section
+    comparison: {
+      title: 'Why Choose This Tool?',
+      message: 'Many online PDF conversion tools upload files to servers, but this tool does not — your files never leave your device.',
+      tableTitle: 'Comparison with Typical Online Tools',
+      headers: {
+        feature: 'Feature',
+        general: 'Typical Online Tool',
+        thisTool: 'This Tool',
+      },
+      features: {
+        serverUpload: 'Server Upload',
+        dailyLimit: 'Daily Usage Limit',
+        registration: 'Registration Required',
+        cost: 'Cost',
+      },
+      values: {
+        yes: 'Yes',
+        no: 'No',
+        required: 'Required',
+        notRequired: 'Not Required',
+        partial: 'Partially Paid',
+        free: 'Completely Free',
+      },
+    },
     // FAQ
     faq: {
       title: 'Frequently Asked Questions (FAQ)',
@@ -240,17 +290,17 @@ export const translations = {
       q2: 'How long are converted files stored?',
       a2: 'Converted images are generated only in browser memory and disappear immediately when you close the page. They are not stored anywhere. Please download the images you need right after conversion.',
       q3: 'Why is browser processing more secure?',
-      a3: 'Server upload methods can expose files while they are stored and processed on the server. Browser processing, on the other hand, only processes files on your device and does not transmit them over the internet. You can safely convert sensitive documents and confidential materials.',
+      a3: 'Server upload methods can expose files while they are stored and processed on the server. Browser processing, on the other hand, only processes files on your device and does not transmit them over the internet. You can safely convert sensitive documents and confidential material.',
       q4: 'How should I choose the quality setting?',
-      a4: 'For general use, we recommend 70-85%. Choose 90% or higher for high quality, or 50-60% if you want to reduce file size.',
+      a4: 'For general use, 70-85% is recommended. For high quality, choose 90% or higher. For smaller file sizes, choose 50-60%.',
       q5: 'Is my file safe?',
-      a5: 'Yes, completely safe. All processing happens only in your browser, and files are not uploaded or stored on our server. See the Privacy Policy for more details.',
+      a5: 'Yes, completely safe. All processing happens in your browser, and files are never uploaded to or stored on our server. See the Privacy Policy for details.',
       q6: 'What PDF formats are supported?',
-      a6: 'All standard PDF formats are supported. Most PDF files including text-based PDFs, scans, and image-containing PDFs can be converted.',
+      a6: 'We support all standard PDF formats. You can convert text-based PDFs, scans, image-containing PDFs, and most other PDF files.',
       q7: 'Can I use it on mobile?',
       a7: 'Yes, it works perfectly on mobile devices. You can use it directly in your smartphone or tablet web browser.',
       q8: 'Do I need to register?',
-      a8: 'No, anyone can use it for free without registration. All additional features and advanced options are also free.',
+      a8: 'No, anyone can use it for free without registration. All features and advanced options are completely free.',
     },
     // Results
     results: {
@@ -264,7 +314,7 @@ export const translations = {
       preparing: 'Preparing...',
       imagePreview: 'Image Preview',
       page: 'Page',
-      downloadSuccess: 'ZIP file has been downloaded.',
+      downloadSuccess: 'ZIP file downloaded successfully.',
       downloadError: 'An error occurred while creating the ZIP file.',
     },
     // Footer
@@ -278,25 +328,25 @@ export const translations = {
     policy: {
       privacy: {
         title: 'Privacy Policy',
-        intro: 'This Privacy Policy explains how the PDF to JPG service ("Service") handles your personal information.',
-        dataProcessing: 'Data Processing Method',
-        dataProcessingDesc: 'All PDF files and converted images are processed only in your browser. Files are not uploaded to or stored on our server.',
+        intro: 'This Privacy Policy explains how PDF to JPG service ("Service") handles your personal information.',
+        dataProcessing: 'Data Processing',
+        dataProcessingDesc: 'All PDF files and converted images are processed only in your browser. Files are never uploaded to or stored on our server.',
         advertising: 'Advertising',
-        advertisingDesc: 'This service displays advertisements through Google AdSense. Google may use cookies to provide ads tailored to your interests.',
+        advertisingDesc: 'This service displays ads through Google AdSense. Google may use cookies to provide ads tailored to your interests.',
         cookies: 'Cookies',
         cookiesDesc: 'We may use cookies to improve the service. You can disable cookies in your browser settings.',
         contact: 'Contact',
-        contactDesc: 'If you have questions about personal information processing, please contact us through the Contact page.',
+        contactDesc: 'If you have questions about how we handle your information, please contact us through the Contact page.',
       },
       terms: {
         title: 'Terms of Service',
         intro: 'These Terms of Service explain the conditions for using the PDF to JPG service.',
         usage: 'Service Usage',
-        usageDesc: 'This service can only be used for personal purposes. Commercial use requires separate permission.',
+        usageDesc: 'This service is for personal use only. Commercial use requires separate permission.',
         limitations: 'Limitations',
-        limitationsDesc: 'You can convert PDF files up to 50MB. The service is provided "as is" and there are no warranties for specific purposes.',
+        limitationsDesc: 'You can convert PDF files up to 50MB. The service is provided "as is" without warranties for specific purposes.',
         liability: 'Limitation of Liability',
-        liabilityDesc: 'We are not responsible for any direct or indirect damages resulting from the use of this service.',
+        liabilityDesc: 'We are not responsible for direct or indirect damages resulting from service use.',
         changes: 'Changes to Terms',
         changesDesc: 'We may change these Terms of Service at any time. Changes will be posted on this page.',
       },
@@ -310,14 +360,3 @@ export const translations = {
     },
   },
 };
-
-export function getTranslation(lang: Language, path: string): string {
-  const keys = path.split('.');
-  let value: any = translations[lang];
-  
-  for (const key of keys) {
-    value = value?.[key];
-  }
-  
-  return value || path;
-}
