@@ -1,6 +1,8 @@
 import * as pdfjsLib from 'pdfjs-dist';
-// Set up the worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+
+// Set up the worker with local file
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 
 export interface ConvertedImage {
   pageNumber: number;
