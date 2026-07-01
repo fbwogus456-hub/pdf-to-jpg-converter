@@ -41,17 +41,18 @@ export async function convertPdfToImages(
     if (!context) throw new Error('Failed to get canvas context');
     
     // Render page to canvas
-    await page.render({
+    const renderTask = page.render({
       canvasContext: context,
       viewport: viewport,
-    } as any).promise;
+    } as any);
+    await renderTask.promise;
     
     // Convert canvas to image
     const mimeType = format === 'png' ? 'image/png' : 'image/jpeg';
-    const imageUrl = canvas.toDataURL(mimeType, quality / 100);
+    const imageUrl = canvas.toDataURL(mimeType);
     
-    // Calculate file size (approximate)
-    const fileSize = Math.round((imageUrl.length * 3) / 4);
+    // Calculate file size (approximate) - base64 string to bytes
+    const fileSize = Math.round((imageUrl.length * 3) / 4 / 1024); // in KB
     
     images.push({
       pageNumber: pageNum,
