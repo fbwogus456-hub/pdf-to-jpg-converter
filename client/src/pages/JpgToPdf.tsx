@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { useAuth } from "@/_core/hooks/useAuth";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
@@ -11,7 +11,7 @@ import { translations } from "@/lib/translations";
 import { convertImagesToPDF, downloadPDF, ImageFile } from "@/lib/jpgToPdfConverter";
 
 export default function JpgToPdf() {
-  const { user, loading: authLoading } = useAuth();
+
   const { language, setLanguage } = useLanguage();
   const t = translations[language];
   
@@ -101,13 +101,7 @@ export default function JpgToPdf() {
     }
   };
 
-  if (authLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Spinner />
-      </div>
-    );
-  }
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">

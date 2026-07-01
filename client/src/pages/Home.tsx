@@ -1,24 +1,16 @@
 import React, { useRef, useState } from 'react';
-import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Spinner } from "@/components/ui/spinner";
-import { trpc } from "@/lib/trpc";
 import { Upload, Download, FileImage, Zap, CheckCircle2, Lock, ChevronDown, Globe } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { translations } from "@/lib/translations";
-
-interface ConvertedImage {
-  pageNumber: number;
-  url: string;
-  fileSize: number;
-}
+import { convertPdfToImages, downloadImage, downloadImagesAsZip, ConvertedImage } from "@/lib/pdfConverter";
 
 export default function Home() {
-  const { user, loading: authLoading } = useAuth();
   const { language, setLanguage } = useLanguage();
   const t = translations[language];
   
@@ -26,7 +18,6 @@ export default function Home() {
   const [quality, setQuality] = useState(85);
   const [isConverting, setIsConverting] = useState(false);
   const [convertedImages, setConvertedImages] = useState<ConvertedImage[]>([]);
-  const [conversionId, setConversionId] = useState<number | null>(null);
   const [totalPages, setTotalPages] = useState(0);
   const [conversionProgress, setConversionProgress] = useState(0);
   const [pageRangeStart, setPageRangeStart] = useState(1);
@@ -34,9 +25,6 @@ export default function Home() {
   const [outputFormat, setOutputFormat] = useState<'jpg' | 'png'>('jpg');
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const uploadMutation = trpc.conversion.uploadAndConvert.useMutation();
-  const zipMutation = trpc.conversion.generateZipDownload.useMutation();
 
   const handleFileSelect = async (file: File) => {
     if (!file.type.includes("pdf")) {
@@ -52,39 +40,24 @@ export default function Home() {
     setIsConverting(true);
     setConversionProgress(0);
     try {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const base64 = (e.target?.result as string).split(",")[1];
-        
-        const progressInterval = setInterval(() => {
-          setConversionProgress((prev) => Math.min(prev + Math.random() * 30, 90));
-        }, 300);
-
-        try {
-          const result = await uploadMutation.mutateAsync({
-            fileName: file.name,
-            fileData: base64,
-            quality,
-          });
-
-          clearInterval(progressInterval);
-          setConversionProgress(100);
-          
-          setTotalPages(result.pageCount);
-          setPageRangeStart(1);
-          setPageRangeEnd(result.pageCount);
-          
-          setConvertedImages(result.images);
-          setConversionId(result.conversionId);
-          toast.success(`${result.pageCount}${language === 'ko' ? '개 페이지가 성공적으로 변환되었습니다.' : ' pages converted successfully.'}`);
-          
-          setTimeout(() => setConversionProgress(0), 1000);
-        } catch (error) {
-          clearInterval(progressInterval);
-          throw error;
-        }
-      };
-      reader.readAsDataURL(file);
+      const images = await convertPdfToImages(
+        file,
+        quality,
+        outputFormat,
+        pageRangeStart,
+        pageRangeEnd,
+        (progress) => setConversionProgress(progress)
+      );
+      
+      setTotalPages(images.length);
+      setPageRangeStart(1);
+      setPageRangeEnd(images.length);
+      setConvertedImages(images);
+      setConversionProgress(100);
+      
+      toast.success(`${images.length}${language === 'ko' ? '개 페이지가 성공적으로 변환되었습니다.' : ' pages converted successfully.'}`);
+      
+      setTimeout(() => setConversionProgress(0), 1000);
     } catch (error) {
       toast.error(t.upload.conversionError);
       console.error(error);
@@ -99,43 +72,34 @@ export default function Home() {
     setIsDragging(true);
   };
 
-  const handleDragLeave = () => {
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
     setIsDragging(false);
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    
     const files = e.dataTransfer.files;
     if (files.length > 0) {
       handleFileSelect(files[0]);
     }
   };
 
-  const downloadImage = (image: ConvertedImage) => {
-    const link = document.createElement("a");
-    link.href = image.url;
-    link.download = `page-${image.pageNumber}.${outputFormat}`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleSelectClick = () => {
+    fileInputRef.current?.click();
   };
 
-  const downloadAsZip = async () => {
-    if (!conversionId) return;
-    
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.currentTarget.files;
+    if (files && files.length > 0) {
+      handleFileSelect(files[0]);
+    }
+  };
+
+  const handleDownloadAll = async () => {
     try {
-      const result = await zipMutation.mutateAsync({
-        conversionId,
-      });
-      
-      const link = document.createElement("a");
-      link.href = result.url;
-      link.download = result.fileName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      await downloadImagesAsZip(convertedImages, 'converted-images');
       toast.success(t.results.downloadSuccess);
     } catch (error) {
       toast.error(t.results.downloadError);
@@ -143,118 +107,129 @@ export default function Home() {
     }
   };
 
-  if (authLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Spinner />
-      </div>
-    );
-  }
+  const handleDownloadSingle = async (image: ConvertedImage) => {
+    try {
+      const ext = outputFormat === 'png' ? 'png' : 'jpg';
+      await downloadImage(image.url, `page_${image.pageNumber}.${ext}`);
+    } catch (error) {
+      toast.error(t.results.downloadError);
+      console.error(error);
+    }
+  };
+
+  const handleConvertNew = () => {
+    setConvertedImages([]);
+    setTotalPages(0);
+    setConversionProgress(0);
+    setPageRangeStart(1);
+    setPageRangeEnd(1);
+    fileInputRef.current?.click();
+  };
+
+  const displayedImages = convertedImages.slice(pageRangeStart - 1, pageRangeEnd);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200">
-        <div className="max-w-6xl mx-auto px-4 py-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-              <FileImage className="w-6 h-6 text-white" />
+      <header className="bg-white shadow-sm">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">
+              P
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">{t.header.title}</h1>
-              <p className="text-sm text-slate-500">{t.header.subtitle}</p>
+              <h1 className="font-bold text-lg">{t.header.title}</h1>
+              <p className="text-xs text-slate-500">{t.header.subtitle}</p>
             </div>
           </div>
-          
-          {/* Language Toggle */}
-          <div className="flex gap-2">
-            <Button
-              variant={language === 'ko' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setLanguage('ko')}
-              className="w-12"
-            >
-              KO
-            </Button>
-            <Button
-              variant={language === 'en' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setLanguage('en')}
-              className="w-12"
-            >
-              EN
-            </Button>
-          </div>
+          <button
+            onClick={() => setLanguage(language === 'ko' ? 'en' : 'ko')}
+            className="px-3 py-1 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+          >
+            {language === 'ko' ? 'EN' : 'KO'}
+          </button>
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-12">
         {/* Privacy Badges */}
-        <div className="flex flex-wrap gap-3 justify-center mb-12">
-          <div className="flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-full">
-            <Lock className="w-4 h-4 text-green-600" />
-            <span className="text-sm font-semibold text-green-700">{t.badges.browserProcessing}</span>
+        <div className="flex gap-3 justify-center mb-8 flex-wrap">
+          <div className="flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-full border border-green-200">
+            <Lock size={16} />
+            <span className="text-sm font-medium">{t.badges.browserProcessing}</span>
           </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded-full">
-            <CheckCircle2 className="w-4 h-4 text-blue-600" />
-            <span className="text-sm font-semibold text-blue-700">{t.badges.noUpload}</span>
+          <div className="flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full border border-blue-200">
+            <Lock size={16} />
+            <span className="text-sm font-medium">{t.badges.noUpload}</span>
           </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-purple-50 border border-purple-200 rounded-full">
-            <Lock className="w-4 h-4 text-purple-600" />
-            <span className="text-sm font-semibold text-purple-700">{t.badges.completePrivacy}</span>
+          <div className="flex items-center gap-2 bg-purple-50 text-purple-700 px-4 py-2 rounded-full border border-purple-200">
+            <Lock size={16} />
+            <span className="text-sm font-medium">{t.badges.completePrivacy}</span>
           </div>
         </div>
 
         {/* Upload Card */}
-        <Card className="mb-12 shadow-lg">
+        <Card className="mb-8">
           <CardHeader>
-            <CardTitle className="text-3xl">{t.upload.title}</CardTitle>
+            <CardTitle>{t.upload.title}</CardTitle>
             <CardDescription>{t.upload.description}</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent>
             {/* Quality Slider */}
-            <div>
-              <label className="text-sm font-semibold text-slate-700">{t.upload.qualityLabel}</label>
-              <div className="flex items-center gap-4 mt-2">
-                <Slider
-                  value={[quality]}
-                  onValueChange={(value) => setQuality(value[0])}
-                  min={30}
-                  max={100}
-                  step={5}
-                  className="flex-1"
-                />
-                <span className="text-lg font-bold text-blue-600 w-12 text-right">{quality}%</span>
+            <div className="mb-6">
+              <div className="flex justify-between items-center mb-2">
+                <label className="text-sm font-medium">{t.upload.qualityLabel}</label>
+                <span className="text-sm text-blue-600 font-semibold">{quality}%</span>
               </div>
+              <Slider
+                value={[quality]}
+                onValueChange={(val) => setQuality(val[0])}
+                min={30}
+                max={100}
+                step={5}
+                className="w-full"
+              />
               <p className="text-xs text-slate-500 mt-1">{t.upload.qualityHint}</p>
             </div>
 
             {/* Advanced Options */}
-            <div className="border-t pt-4">
+            <div className="mb-6 border-t pt-6">
               <button
+                type="button"
                 onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
-                className="flex items-center gap-2 text-slate-700 hover:text-slate-900 font-semibold"
+                className="flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-slate-900"
               >
-                <ChevronDown className={`w-4 h-4 transition-transform ${showAdvancedOptions ? 'rotate-180' : ''}`} />
+                <ChevronDown size={16} className={`transition-transform ${showAdvancedOptions ? 'rotate-180' : ''}`} />
                 {t.upload.advancedOptions}
               </button>
 
               {showAdvancedOptions && (
                 <div className="mt-4 space-y-4">
                   <div>
-                    <label className="text-sm font-semibold text-slate-700">{t.upload.outputFormat}</label>
-                    <div className="flex gap-2 mt-2">
-                      {['jpg', 'png'].map((format) => (
-                        <Button
-                          key={format}
-                          variant={outputFormat === format ? 'default' : 'outline'}
-                          size="sm"
-                          onClick={() => setOutputFormat(format as 'jpg' | 'png')}
-                        >
-                          {format.toUpperCase()}
-                        </Button>
-                      ))}
+                    <label className="text-sm font-medium block mb-2">{t.upload.outputFormat}</label>
+                    <div className="flex gap-4">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="format"
+                          value="jpg"
+                          checked={outputFormat === 'jpg'}
+                          onChange={(e) => setOutputFormat(e.target.value as 'jpg' | 'png')}
+                          className="w-4 h-4"
+                        />
+                        <span className="text-sm">JPG</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="format"
+                          value="png"
+                          checked={outputFormat === 'png'}
+                          onChange={(e) => setOutputFormat(e.target.value as 'jpg' | 'png')}
+                          className="w-4 h-4"
+                        />
+                        <span className="text-sm">PNG</span>
+                      </label>
                     </div>
                     <p className="text-xs text-slate-500 mt-1">{t.upload.formatHint}</p>
                   </div>
@@ -268,93 +243,97 @@ export default function Home() {
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
               className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${
-                isDragging ? 'border-blue-500 bg-blue-50' : 'border-slate-300 bg-slate-50'
+                isDragging
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'border-slate-300 bg-slate-50 hover:border-slate-400'
               }`}
             >
-              <Upload className="w-12 h-12 text-slate-400 mx-auto mb-3" />
-              <p className="text-lg font-semibold text-slate-900">{t.upload.dragDropTitle}</p>
+              <FileImage size={48} className="mx-auto mb-4 text-slate-400" />
+              <p className="font-semibold text-slate-700 mb-1">{t.upload.dragDropTitle}</p>
               <p className="text-sm text-slate-500">{t.upload.dragDropHint}</p>
             </div>
 
-            {/* Select Button */}
-            <Button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isConverting}
-              className="w-full h-12 text-base font-semibold"
-            >
-              {isConverting ? (
-                <>
-                  <Spinner className="w-4 h-4 mr-2" />
-                  {t.upload.converting}
-                </>
-              ) : (
-                <>
-                  <Upload className="w-4 h-4 mr-2" />
-                  {t.upload.selectButton}
-                </>
-              )}
-            </Button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".pdf"
+              onChange={handleFileInputChange}
+              className="hidden"
+            />
 
             {/* Progress Bar */}
             {conversionProgress > 0 && (
-              <div className="space-y-2">
+              <div className="mt-6">
                 <div className="w-full bg-slate-200 rounded-full h-2">
                   <div
                     className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                     style={{ width: `${conversionProgress}%` }}
                   />
                 </div>
-                <p className="text-sm text-slate-600 text-center">{Math.round(conversionProgress)}%</p>
+                <p className="text-xs text-slate-500 mt-2 text-center">
+                  {t.upload.converting} {Math.round(conversionProgress)}%
+                </p>
               </div>
             )}
 
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".pdf"
-              onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0])}
-              className="hidden"
-            />
+            {/* Select Button */}
+            <Button
+              onClick={handleSelectClick}
+              disabled={isConverting}
+              className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white"
+              type="button"
+            >
+              {isConverting ? (
+                <>
+                  <Spinner className="mr-2 w-4 h-4" />
+                  {t.upload.converting}
+                </>
+              ) : (
+                <>
+                  <Upload size={18} className="mr-2" />
+                  {t.upload.selectButton}
+                </>
+              )}
+            </Button>
           </CardContent>
         </Card>
 
         {/* Comparison Section */}
-        <Card className="mb-12 shadow-lg border-2 border-yellow-100 bg-yellow-50">
+        <Card className="mb-8 bg-yellow-50 border-yellow-200">
           <CardHeader>
-            <CardTitle className="text-2xl text-yellow-900">{t.comparison.title}</CardTitle>
+            <CardTitle className="text-yellow-900">{t.comparison.title}</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <p className="text-lg text-yellow-800 font-semibold">{t.comparison.message}</p>
-            
+          <CardContent>
+            <p className="text-yellow-800 mb-6">{t.comparison.message}</p>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b-2 border-yellow-200">
-                    <th className="text-left py-3 px-4 font-bold text-yellow-900">{t.comparison.headers.feature}</th>
-                    <th className="text-left py-3 px-4 font-bold text-yellow-900">{t.comparison.headers.general}</th>
-                    <th className="text-left py-3 px-4 font-bold text-yellow-900">{t.comparison.headers.thisTool}</th>
+                  <tr className="border-b border-yellow-200">
+                    <th className="text-left py-2 px-4 font-semibold text-yellow-900">{t.comparison.headers.feature}</th>
+                    <th className="text-left py-2 px-4 font-semibold text-yellow-900">{t.comparison.headers.general}</th>
+                    <th className="text-left py-2 px-4 font-semibold text-yellow-900">{t.comparison.headers.thisTool}</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr className="border-b border-yellow-100">
-                    <td className="py-3 px-4 font-semibold text-yellow-900">{t.comparison.features.serverUpload}</td>
-                    <td className="py-3 px-4 text-yellow-800">{t.comparison.values.yes}</td>
-                    <td className="py-3 px-4 text-green-700 font-semibold">{t.comparison.values.no}</td>
+                    <td className="py-2 px-4">{t.comparison.features.serverUpload}</td>
+                    <td className="py-2 px-4 text-yellow-700">{t.comparison.values.yes}</td>
+                    <td className="py-2 px-4 text-green-700 font-semibold">{t.comparison.values.no}</td>
                   </tr>
                   <tr className="border-b border-yellow-100">
-                    <td className="py-3 px-4 font-semibold text-yellow-900">{t.comparison.features.dailyLimit}</td>
-                    <td className="py-3 px-4 text-yellow-800">{t.comparison.values.yes}</td>
-                    <td className="py-3 px-4 text-green-700 font-semibold">{t.comparison.values.no}</td>
+                    <td className="py-2 px-4">{t.comparison.features.dailyLimit}</td>
+                    <td className="py-2 px-4 text-yellow-700">{t.comparison.values.yes}</td>
+                    <td className="py-2 px-4 text-green-700 font-semibold">{t.comparison.values.no}</td>
                   </tr>
                   <tr className="border-b border-yellow-100">
-                    <td className="py-3 px-4 font-semibold text-yellow-900">{t.comparison.features.registration}</td>
-                    <td className="py-3 px-4 text-yellow-800">{t.comparison.values.required}</td>
-                    <td className="py-3 px-4 text-green-700 font-semibold">{t.comparison.values.notRequired}</td>
+                    <td className="py-2 px-4">{t.comparison.features.registration}</td>
+                    <td className="py-2 px-4 text-yellow-700">{t.comparison.values.required}</td>
+                    <td className="py-2 px-4 text-green-700 font-semibold">{t.comparison.values.notRequired}</td>
                   </tr>
                   <tr>
-                    <td className="py-3 px-4 font-semibold text-yellow-900">{t.comparison.features.cost}</td>
-                    <td className="py-3 px-4 text-yellow-800">{t.comparison.values.partial}</td>
-                    <td className="py-3 px-4 text-green-700 font-semibold">{t.comparison.values.free}</td>
+                    <td className="py-2 px-4">{t.comparison.features.cost}</td>
+                    <td className="py-2 px-4 text-yellow-700">{t.comparison.values.partial}</td>
+                    <td className="py-2 px-4 text-green-700 font-semibold">{t.comparison.values.free}</td>
                   </tr>
                 </tbody>
               </table>
@@ -362,86 +341,127 @@ export default function Home() {
           </CardContent>
         </Card>
 
+        {/* Features */}
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Zap size={20} className="text-blue-600" />
+                {t.features.fastConversion}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-slate-600">{t.features.fastConversionDesc}</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Lock size={20} className="text-green-600" />
+                {t.features.completeSafety}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-slate-600">{t.features.completeSafetyDesc}</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CheckCircle2 size={20} className="text-purple-600" />
+                {t.features.freeUsage}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-slate-600">{t.features.freeUsageDesc}</p>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Results Section */}
         {convertedImages.length > 0 && (
-          <Card className="mb-12 shadow-lg">
+          <Card className="mb-8 bg-green-50 border-green-200">
             <CardHeader>
-              <CardTitle>{t.results.conversionComplete}</CardTitle>
-              <CardDescription>{convertedImages.length} {t.results.imagesReady}</CardDescription>
+              <CardTitle className="text-green-900">{t.results.conversionComplete}</CardTitle>
+              <CardDescription className="text-green-800">
+                {convertedImages.length} {t.results.imagesReady}
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Page Range Selection */}
-              <div>
-                <label className="text-sm font-semibold text-slate-700">{t.results.pageRangeLabel}</label>
-                <div className="flex items-center gap-4 mt-2">
-                  <input
-                    type="number"
-                    min={1}
-                    max={totalPages}
-                    value={pageRangeStart}
-                    onChange={(e) => setPageRangeStart(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-16 px-2 py-1 border border-slate-300 rounded"
-                  />
-                  <span>-</span>
-                  <input
-                    type="number"
-                    min={1}
-                    max={totalPages}
-                    value={pageRangeEnd}
-                    onChange={(e) => setPageRangeEnd(Math.min(totalPages, parseInt(e.target.value) || totalPages))}
-                    className="w-16 px-2 py-1 border border-slate-300 rounded"
-                  />
-                  <span className="text-sm text-slate-600">({t.results.showing} {pageRangeStart} {t.results.of} {totalPages})</span>
-                </div>
-              </div>
-
-              {/* Image Thumbnails */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                {convertedImages
-                  .filter((img) => img.pageNumber >= pageRangeStart && img.pageNumber <= pageRangeEnd)
-                  .map((image) => (
-                    <div key={image.pageNumber} className="group relative">
-                      <img
-                        src={image.url}
-                        alt={`${t.results.page} ${image.pageNumber}`}
-                        className="w-full h-32 object-cover rounded-lg border border-slate-200 group-hover:border-blue-500 transition-colors"
-                      />
-                      <button
-                        onClick={() => downloadImage(image)}
-                        className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"
-                      >
-                        <Download className="w-6 h-6 text-white" />
-                      </button>
-                      <p className="text-xs text-slate-600 mt-1 text-center">{t.results.page} {image.pageNumber}</p>
-                    </div>
-                  ))}
-              </div>
-
-              {/* Download Buttons */}
-              <div className="flex gap-3">
+            <CardContent>
+              <div className="space-y-6">
+                {/* Download All Button */}
                 <Button
-                  onClick={downloadAsZip}
-                  disabled={zipMutation.isPending}
-                  className="flex-1"
+                  onClick={handleDownloadAll}
+                  className="w-full bg-green-600 hover:bg-green-700 text-white"
+                  type="button"
                 >
-                  {zipMutation.isPending ? (
-                    <>
-                      <Spinner className="w-4 h-4 mr-2" />
-                      {t.results.preparing}
-                    </>
-                  ) : (
-                    <>
-                      <Download className="w-4 h-4 mr-2" />
-                      {t.results.downloadAll}
-                    </>
-                  )}
+                  <Download size={18} className="mr-2" />
+                  {t.results.downloadAll}
                 </Button>
+
+                {/* Page Range Selection */}
+                {convertedImages.length > 1 && (
+                  <div className="border-t pt-6">
+                    <label className="text-sm font-medium block mb-4">{t.results.pageRangeLabel}</label>
+                    <div className="flex gap-4 items-center">
+                      <div className="flex items-center gap-2">
+                        <label className="text-xs text-slate-600">{t.results.showing}</label>
+                        <input
+                          type="number"
+                          min="1"
+                          max={convertedImages.length}
+                          value={pageRangeStart}
+                          onChange={(e) => setPageRangeStart(Math.max(1, parseInt(e.target.value) || 1))}
+                          className="w-16 px-2 py-1 border border-slate-300 rounded text-sm"
+                        />
+                        <span className="text-xs text-slate-600">{t.results.of}</span>
+                        <input
+                          type="number"
+                          min="1"
+                          max={convertedImages.length}
+                          value={pageRangeEnd}
+                          onChange={(e) => setPageRangeEnd(Math.min(convertedImages.length, parseInt(e.target.value) || convertedImages.length))}
+                          className="w-16 px-2 py-1 border border-slate-300 rounded text-sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Image Thumbnails */}
+                <div className="border-t pt-6">
+                  <p className="text-sm font-medium mb-4">{t.results.imagePreview}</p>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {displayedImages.map((image) => (
+                      <div key={image.pageNumber} className="group relative">
+                        <img
+                          src={image.url}
+                          alt={`${t.results.page} ${image.pageNumber}`}
+                          className="w-full h-32 object-cover rounded-lg border border-slate-300 group-hover:border-blue-500 transition-colors"
+                        />
+                        <button
+                          onClick={() => handleDownloadSingle(image)}
+                          className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 flex items-center justify-center rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                          type="button"
+                        >
+                          <Download size={24} className="text-white" />
+                        </button>
+                        <p className="text-xs text-slate-600 mt-1 text-center">
+                          {t.results.page} {image.pageNumber}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Convert New File */}
                 <Button
-                  onClick={() => {
-                    setConvertedImages([]);
-                    setConversionId(null);
-                  }}
+                  onClick={handleConvertNew}
                   variant="outline"
+                  className="w-full"
+                  type="button"
                 >
                   {t.results.convertNewFile}
                 </Button>
@@ -450,66 +470,66 @@ export default function Home() {
           </Card>
         )}
 
-        {/* Features Section */}
-        <div className="grid md:grid-cols-2 gap-6 mb-12">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Zap className="w-5 h-5 text-blue-600" />
-                {t.features.fastConversion}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-slate-600">{t.features.fastConversionDesc}</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Lock className="w-5 h-5 text-green-600" />
-                {t.features.completeSafety}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-slate-600">{t.features.completeSafetyDesc}</p>
-            </CardContent>
-          </Card>
-        </div>
-
         {/* About Section */}
-        <Card className="mb-12">
+        <Card className="mb-8">
           <CardHeader>
-            <CardTitle className="text-2xl">{t.about.title}</CardTitle>
+            <CardTitle>{t.about.title}</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4 text-slate-700">
+          <CardContent className="space-y-4 text-sm text-slate-600">
             <p>{t.about.para1}</p>
             <p>{t.about.para2}</p>
             <p>{t.about.para3}</p>
           </CardContent>
         </Card>
 
-        {/* FAQ Section */}
-        <Card className="mb-12">
+        {/* How to Use */}
+        <Card className="mb-8">
           <CardHeader>
-            <CardTitle className="text-2xl">{t.faq.title}</CardTitle>
+            <CardTitle>{t.howToUse.title}</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
-            {[
-              { q: t.faq.q1, a: t.faq.a1 },
-              { q: t.faq.q2, a: t.faq.a2 },
-              { q: t.faq.q3, a: t.faq.a3 },
-              { q: t.faq.q4, a: t.faq.a4 },
-              { q: t.faq.q5, a: t.faq.a5 },
-              { q: t.faq.q6, a: t.faq.a6 },
-              { q: t.faq.q7, a: t.faq.a7 },
-              { q: t.faq.q8, a: t.faq.a8 },
-            ].map((item, idx) => (
-              <div key={idx} className="border-b pb-4 last:border-b-0">
-                <h3 className="font-semibold text-slate-900 mb-2">{item.q}</h3>
-                <p className="text-slate-600 text-sm">{item.a}</p>
-              </div>
-            ))}
+          <CardContent>
+            <ol className="space-y-3 text-sm text-slate-600">
+              {[1, 2, 3, 4].map((step) => (
+                <li key={step} className="flex gap-3">
+                  <span className="font-semibold text-blue-600 flex-shrink-0">{step}.</span>
+                  <span>{t.howToUse[`step${step}` as keyof typeof t.howToUse]}</span>
+                </li>
+              ))}
+            </ol>
+          </CardContent>
+        </Card>
+
+        {/* FAQ */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>{t.faq.title}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                <div key={i} className="border-b pb-4 last:border-b-0">
+                  <p className="font-semibold text-slate-900 mb-2">{t.faq[`q${i}` as keyof typeof t.faq]}</p>
+                  <p className="text-sm text-slate-600">{t.faq[`a${i}` as keyof typeof t.faq]}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Uses Section */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>{t.useCases.title}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2 text-sm text-slate-600">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <li key={i} className="flex gap-2">
+                  <span className="text-blue-600">•</span>
+                  <span>{t.useCases[`use${i}` as keyof typeof t.useCases]}</span>
+                </li>
+              ))}
+            </ul>
           </CardContent>
         </Card>
       </main>
