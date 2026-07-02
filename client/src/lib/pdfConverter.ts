@@ -41,24 +41,29 @@ export async function convertPdfToImages(
     if (!context) throw new Error('Failed to get canvas context');
     
     // Render page to canvas
+    console.log(`[PDF] Page ${pageNum}: Canvas size ${canvas.width}x${canvas.height}`);
     const renderTask = page.render({
       canvasContext: context,
       viewport: viewport,
     } as any);
     await renderTask.promise;
+    console.log(`[PDF] Page ${pageNum}: Render complete`);
     
     // Convert canvas to image
     const mimeType = format === 'png' ? 'image/png' : 'image/jpeg';
     const imageUrl = canvas.toDataURL(mimeType);
+    console.log(`[PDF] Page ${pageNum}: toDataURL result - ${imageUrl.substring(0, 50)}... (length: ${imageUrl.length})`);
     
     // Calculate file size (approximate) - base64 string to bytes
     const fileSize = Math.round((imageUrl.length * 3) / 4 / 1024); // in KB
     
-    images.push({
+    const result = {
       pageNumber: pageNum,
       url: imageUrl,
       fileSize,
-    });
+    };
+    console.log(`[PDF] Page ${pageNum}: Result object`, result);
+    images.push(result);
     
     // Update progress
     if (onProgress) {
@@ -67,6 +72,8 @@ export async function convertPdfToImages(
     }
   }
   
+  console.log(`[PDF] Conversion complete. Total images: ${images.length}`);
+  console.log('[PDF] Final images array:', images);
   return images;
 }
 

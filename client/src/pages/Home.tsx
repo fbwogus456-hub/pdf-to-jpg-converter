@@ -40,19 +40,27 @@ export default function Home() {
     setIsConverting(true);
     setConversionProgress(0);
     try {
+      // 첫 변환 시 모든 페이지를 변환 (pageStart/End는 undefined로 전달)
       const images = await convertPdfToImages(
         file,
         quality,
         outputFormat,
-        pageRangeStart,
-        pageRangeEnd,
+        undefined,  // pageStart - undefined면 1부터 시작
+        undefined,  // pageEnd - undefined면 마지막 페이지까지
         (progress) => setConversionProgress(progress)
       );
+      
+      console.log('[Home] Conversion result:', images);
+      console.log('[Home] Images length:', images.length);
+      if (images.length > 0) {
+        console.log('[Home] First image URL length:', images[0]?.url.length);
+      }
       
       setTotalPages(images.length);
       setPageRangeStart(1);
       setPageRangeEnd(images.length);
       setConvertedImages(images);
+      console.log('[Home] State updated with convertedImages');
       setConversionProgress(100);
       
       toast.success(`${images.length}${language === 'ko' ? '개 페이지가 성공적으로 변환되었습니다.' : ' pages converted successfully.'}`);
