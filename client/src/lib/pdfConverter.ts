@@ -1,37 +1,8 @@
-import type * as pdfjsLib from 'pdfjs-dist';
+import * as pdfjsLib from 'pdfjs-dist';
+import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
-let pdfjs: typeof pdfjsLib | null = null;
-
-async function initPdfJs() {
-  if (pdfjs) return pdfjs;
-  
-  try {
-    // Import pdfjs-dist with proper error handling
-    const pdfjsModule = await import('pdfjs-dist');
-    
-    // Set worker source - try multiple approaches for compatibility
-    try {
-      const pdfWorkerModule = await import('pdfjs-dist/build/pdf.worker.min.mjs?url');
-      pdfjsModule.GlobalWorkerOptions.workerSrc = pdfWorkerModule.default;
-    } catch (workerError) {
-      console.warn('[PDF] Failed to load worker from mjs, trying js fallback');
-      try {
-        // Fallback to js version
-          // Skip js fallback - not available in this version
-      } catch (fallbackError) {
-        console.warn('[PDF] Worker fallback also failed, using CDN');
-        // Last resort: use CDN
-        pdfjsModule.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-      }
-    }
-    
-    pdfjs = pdfjsModule;
-    return pdfjs;
-  } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to initialize PDF.js: ${errorMsg}`);
-  }
-}
+// Set worker source once at module load time
+pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl;
 
 export interface ConvertedImage {
   pageNumber: number;
@@ -47,12 +18,7 @@ export async function convertPdfToImages(
   pageEnd?: number,
   onProgress?: (progress: number) => void
 ): Promise<ConvertedImage[]> {
-  let pdfjsLibInstance: any = null;
-  
   try {
-    // Initialize PDF.js
-    pdfjsLibInstance = await initPdfJs();
-    
     // Validate file type
     if (!file.type.includes('pdf') && !file.name.endsWith('.pdf')) {
       throw new Error('Invalid file type: Please upload a PDF file');
@@ -74,17 +40,11 @@ export async function convertPdfToImages(
 
     console.log('[PDF] Loading PDF document...');
     
-    // Use safer getDocument options
-    const pdf = await (pdfjsLibInstance as any).getDocument({
-      data: arrayBuffer,
-      useSystemFonts: true,
-      disableAutoFetch: false,
-      disableStream: false,
-      isEvalSupported: false,
-      maxImageSize: 16777216,
-      cMapUrl: undefined,
-      cMapPacked: undefined,
-    }).promise;
+    // Load PDF document
+        const pdf = await pdfjsLib.getDocument({
+          data: arrayBuffer,
+          useSystemFonts: true,
+        } as any).promise;
 
     console.log(`[PDF] PDF loaded successfully. Total pages: ${pdf.numPages}`);
 
@@ -102,23 +62,11 @@ export async function convertPdfToImages(
       try {
         console.log(`[PDF] Processing page ${pageNum}...`);
         
-        // Get page with error handling
-        let page;
-        try {
-          page = await pdf.getPage(pageNum);
-        } catch (pageGetError) {
-          console.warn(`[PDF] Failed to get page ${pageNum}, skipping`);
-          continue;
-        }
+        // Get page
+        const page = await pdf.getPage(pageNum);
 
-        // Get page dimensions with error handling
-        let viewport;
-        try {
-          viewport = page.getViewport({ scale: 2 });
-        } catch (e) {
-          console.warn(`[PDF] Failed to get viewport for page ${pageNum}, using default scale`);
-          viewport = page.getViewport({ scale: 1 });
-        }
+        // Get viewport
+        const viewport = page.getViewport({ scale: 2 });
 
         // Create canvas
         const canvas = document.createElement('canvas');
@@ -126,68 +74,46 @@ export async function convertPdfToImages(
         canvas.height = viewport.height;
 
         const context = canvas.getContext('2d');
-        if (!context) throw new Error('Failed to get canvas context');
+        if (!context) {
+          throw new Error('Failed to get canvas context');
+        }
 
         // Set white background
         context.fillStyle = 'white';
         context.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Render page to canvas with timeout
+        // Render page to canvas
         console.log(`[PDF] Page ${pageNum}: Canvas size ${canvas.width}x${canvas.height}`);
         
-        let renderTask;
-        try {
-          renderTask = page.render({
-            canvasContext: context,
-            viewport: viewport,
-          });
-        } catch (renderInitError) {
-          console.warn(`[PDF] Failed to initialize render for page ${pageNum}`, renderInitError);
-          continue;
-        }
-
-        // Wait for render with timeout
-        try {
-          await Promise.race([
-            renderTask.promise,
-            new Promise((_, reject) => 
-              setTimeout(() => reject(new Error('Render timeout')), 30000)
-            )
-          ]);
-        } catch (renderError) {
-          console.warn(`[PDF] Render failed for page ${pageNum}:`, renderError);
-          continue;
-        }
-
+        const renderTask = page.render({
+          canvasContext: context,
+          viewport: viewport,
+        } as any);
+        
+        await renderTask.promise;
         console.log(`[PDF] Page ${pageNum}: Render complete`);
 
-        // Convert canvas to image with quality setting
-        let imageUrl: string;
-        try {
-          const mimeType = format === 'png' ? 'image/png' : 'image/jpeg';
-          const qualityValue = format === 'png' ? undefined : quality / 100;
-          imageUrl = canvas.toDataURL(mimeType, qualityValue);
-        } catch (toDataUrlError) {
-          console.warn(`[PDF] toDataURL failed for page ${pageNum}:`, toDataUrlError);
-          continue;
-        }
+        // Convert canvas to image
+        const mimeType = format === 'png' ? 'image/png' : 'image/jpeg';
+        const qualityValue = format === 'png' ? undefined : quality / 100;
+        const imageUrl = canvas.toDataURL(mimeType, qualityValue);
         
         if (!imageUrl || imageUrl === 'data:,' || imageUrl.length < 100) {
-          console.warn(`[PDF] Invalid image data for page ${pageNum}`);
-          continue;
+          throw new Error('Failed to convert canvas to image data URL');
         }
 
-        console.log(`[PDF] Page ${pageNum}: toDataURL result - ${imageUrl.substring(0, 50)}... (length: ${imageUrl.length})`);
+        console.log(`[PDF] Page ${pageNum}: toDataURL success - ${imageUrl.substring(0, 50)}... (length: ${imageUrl.length})`);
 
-        // Calculate file size (approximate) - base64 string to bytes
+        // Calculate file size (approximate)
         const fileSize = Math.round((imageUrl.length * 3) / 4 / 1024); // in KB
 
-        const result = {
+        const result: ConvertedImage = {
           pageNumber: pageNum,
           url: imageUrl,
           fileSize,
         };
-        console.log(`[PDF] Page ${pageNum}: Result object`, result);
+        
+        console.log(`[PDF] Page ${pageNum}: Result object created`, result);
         images.push(result);
 
         // Update progress
@@ -198,12 +124,12 @@ export async function convertPdfToImages(
       } catch (pageError) {
         const pageErrorMsg = pageError instanceof Error ? pageError.message : String(pageError);
         console.error(`[PDF] Error rendering page ${pageNum}:`, pageErrorMsg);
-        // Continue with next page instead of throwing
+        throw new Error(`Failed to render page ${pageNum}: ${pageErrorMsg}`);
       }
     }
 
     if (images.length === 0) {
-      throw new Error('No pages were successfully converted');
+      throw new Error('No pages were converted');
     }
 
     console.log(`[PDF] Conversion complete. Total images: ${images.length}`);
