@@ -180,7 +180,8 @@ export default defineConfig({
       "127.0.0.1",
     ],
     fs: {
-      strict: true,
+      strict: false,
+      allow: [path.resolve(import.meta.dirname, "node_modules")],
       deny: ["**/.*"],
     },
   },
