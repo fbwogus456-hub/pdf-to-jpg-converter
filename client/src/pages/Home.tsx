@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -25,6 +25,7 @@ export default function Home() {
   const [outputFormat, setOutputFormat] = useState<'jpg' | 'png'>('jpg');
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
 
   const handleFileSelect = async (file: File) => {
     if (!file.type.includes("pdf")) {
@@ -65,7 +66,11 @@ export default function Home() {
       
       toast.success(`${images.length}${language === 'ko' ? '개 페이지가 성공적으로 변환되었습니다.' : ' pages converted successfully.'}`);
       
-      setTimeout(() => setConversionProgress(0), 1000);
+      // 자동 스크롤
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setConversionProgress(0);
+      }, 500);
     } catch (error) {
       toast.error(t.upload.conversionError);
       console.error(error);
@@ -200,6 +205,38 @@ export default function Home() {
               <p className="text-xs text-slate-500 mt-1">{t.upload.qualityHint}</p>
             </div>
 
+            {/* Output Format Selection - 항상 표시 */}
+            <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <label className="text-sm font-medium block mb-3">{t.upload.outputFormat}</label>
+              <div className="flex gap-6">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="format"
+                    value="jpg"
+                    checked={outputFormat === 'jpg'}
+                    onChange={(e) => setOutputFormat(e.target.value as 'jpg' | 'png')}
+                    className="w-4 h-4"
+                  />
+                  <span className="text-sm font-medium">JPG</span>
+                  <span className="text-xs text-slate-500">(작은 파일 크기)</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="format"
+                    value="png"
+                    checked={outputFormat === 'png'}
+                    onChange={(e) => setOutputFormat(e.target.value as 'jpg' | 'png')}
+                    className="w-4 h-4"
+                  />
+                  <span className="text-sm font-medium">PNG</span>
+                  <span className="text-xs text-slate-500">(투명도 지원)</span>
+                </label>
+              </div>
+              <p className="text-xs text-slate-500 mt-2">{t.upload.formatHint}</p>
+            </div>
+
             {/* Advanced Options */}
             <div className="mb-6 border-t pt-6">
               <button
@@ -213,34 +250,7 @@ export default function Home() {
 
               {showAdvancedOptions && (
                 <div className="mt-4 space-y-4">
-                  <div>
-                    <label className="text-sm font-medium block mb-2">{t.upload.outputFormat}</label>
-                    <div className="flex gap-4">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="format"
-                          value="jpg"
-                          checked={outputFormat === 'jpg'}
-                          onChange={(e) => setOutputFormat(e.target.value as 'jpg' | 'png')}
-                          className="w-4 h-4"
-                        />
-                        <span className="text-sm">JPG</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="format"
-                          value="png"
-                          checked={outputFormat === 'png'}
-                          onChange={(e) => setOutputFormat(e.target.value as 'jpg' | 'png')}
-                          className="w-4 h-4"
-                        />
-                        <span className="text-sm">PNG</span>
-                      </label>
-                    </div>
-                    <p className="text-xs text-slate-500 mt-1">{t.upload.formatHint}</p>
-                  </div>
+                  {/* Additional advanced options can be added here */}
                 </div>
               )}
             </div>
@@ -305,6 +315,98 @@ export default function Home() {
             </Button>
           </CardContent>
         </Card>
+
+        {/* Results Section - 업로드 영역 바로 아래 */}
+        {convertedImages.length > 0 && (
+          <div ref={resultsRef}>
+            <Card className="mb-8 bg-green-50 border-green-200">
+              <CardHeader>
+                <CardTitle className="text-green-900">{t.results.conversionComplete}</CardTitle>
+                <CardDescription className="text-green-800">
+                  {convertedImages.length} {t.results.imagesReady}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  {/* Download All Button */}
+                  <Button
+                    onClick={handleDownloadAll}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white"
+                    type="button"
+                  >
+                    <Download size={18} className="mr-2" />
+                    {t.results.downloadAll}
+                  </Button>
+
+                  {/* Page Range Selection */}
+                  {convertedImages.length > 1 && (
+                    <div className="border-t pt-6">
+                      <label className="text-sm font-medium block mb-4">{t.results.pageRangeLabel}</label>
+                      <div className="flex gap-4 items-center">
+                        <div className="flex items-center gap-2">
+                          <label className="text-xs text-slate-600">{t.results.showing}</label>
+                          <input
+                            type="number"
+                            min="1"
+                            max={convertedImages.length}
+                            value={pageRangeStart}
+                            onChange={(e) => setPageRangeStart(Math.max(1, parseInt(e.target.value) || 1))}
+                            className="w-16 px-2 py-1 border border-slate-300 rounded text-sm"
+                          />
+                          <span className="text-xs text-slate-600">{t.results.of}</span>
+                          <input
+                            type="number"
+                            min="1"
+                            max={convertedImages.length}
+                            value={pageRangeEnd}
+                            onChange={(e) => setPageRangeEnd(Math.min(convertedImages.length, parseInt(e.target.value) || convertedImages.length))}
+                            className="w-16 px-2 py-1 border border-slate-300 rounded text-sm"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Image Thumbnails */}
+                  <div className="border-t pt-6">
+                    <p className="text-sm font-medium mb-4">{t.results.imagePreview}</p>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {displayedImages.map((image) => (
+                        <div key={image.pageNumber} className="group relative">
+                          <img
+                            src={image.url}
+                            alt={`${t.results.page} ${image.pageNumber}`}
+                            className="w-full h-32 object-cover rounded-lg border border-slate-300 group-hover:border-blue-500 transition-colors"
+                          />
+                          <button
+                            onClick={() => handleDownloadSingle(image)}
+                            className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 flex items-center justify-center rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                            type="button"
+                          >
+                            <Download size={24} className="text-white" />
+                          </button>
+                          <p className="text-xs text-slate-600 mt-1 text-center">
+                            {t.results.page} {image.pageNumber}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Convert New File */}
+                  <Button
+                    onClick={handleConvertNew}
+                    variant="outline"
+                    className="w-full"
+                    type="button"
+                  >
+                    {t.results.convertNewFile}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         {/* Comparison Section */}
         <Card className="mb-8 bg-yellow-50 border-yellow-200">
@@ -388,96 +490,6 @@ export default function Home() {
           </Card>
         </div>
 
-        {/* Results Section */}
-        {convertedImages.length > 0 && (
-          <Card className="mb-8 bg-green-50 border-green-200">
-            <CardHeader>
-              <CardTitle className="text-green-900">{t.results.conversionComplete}</CardTitle>
-              <CardDescription className="text-green-800">
-                {convertedImages.length} {t.results.imagesReady}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                {/* Download All Button */}
-                <Button
-                  onClick={handleDownloadAll}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white"
-                  type="button"
-                >
-                  <Download size={18} className="mr-2" />
-                  {t.results.downloadAll}
-                </Button>
-
-                {/* Page Range Selection */}
-                {convertedImages.length > 1 && (
-                  <div className="border-t pt-6">
-                    <label className="text-sm font-medium block mb-4">{t.results.pageRangeLabel}</label>
-                    <div className="flex gap-4 items-center">
-                      <div className="flex items-center gap-2">
-                        <label className="text-xs text-slate-600">{t.results.showing}</label>
-                        <input
-                          type="number"
-                          min="1"
-                          max={convertedImages.length}
-                          value={pageRangeStart}
-                          onChange={(e) => setPageRangeStart(Math.max(1, parseInt(e.target.value) || 1))}
-                          className="w-16 px-2 py-1 border border-slate-300 rounded text-sm"
-                        />
-                        <span className="text-xs text-slate-600">{t.results.of}</span>
-                        <input
-                          type="number"
-                          min="1"
-                          max={convertedImages.length}
-                          value={pageRangeEnd}
-                          onChange={(e) => setPageRangeEnd(Math.min(convertedImages.length, parseInt(e.target.value) || convertedImages.length))}
-                          className="w-16 px-2 py-1 border border-slate-300 rounded text-sm"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Image Thumbnails */}
-                <div className="border-t pt-6">
-                  <p className="text-sm font-medium mb-4">{t.results.imagePreview}</p>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {displayedImages.map((image) => (
-                      <div key={image.pageNumber} className="group relative">
-                        <img
-                          src={image.url}
-                          alt={`${t.results.page} ${image.pageNumber}`}
-                          className="w-full h-32 object-cover rounded-lg border border-slate-300 group-hover:border-blue-500 transition-colors"
-                        />
-                        <button
-                          onClick={() => handleDownloadSingle(image)}
-                          className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 flex items-center justify-center rounded-lg transition-all opacity-0 group-hover:opacity-100"
-                          type="button"
-                        >
-                          <Download size={24} className="text-white" />
-                        </button>
-                        <p className="text-xs text-slate-600 mt-1 text-center">
-                          {t.results.page} {image.pageNumber}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Convert New File */}
-                <Button
-                  onClick={handleConvertNew}
-                  variant="outline"
-                  className="w-full"
-                  type="button"
-                >
-                  {t.results.convertNewFile}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
         {/* About Section */}
         <Card className="mb-8">
           <CardHeader>
@@ -548,17 +560,16 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-8">
             <p className="text-sm">{t.footer.copyright}</p>
             <div className="flex gap-6 flex-wrap justify-center">
-              <Link href="/jpg-to-pdf" className="text-sm text-slate-400 hover:text-slate-200 transition-colors">
-                {t.footer.jpgToPdf}
+              <Link href="/jpg-to-pdf" className="text-sm hover:text-white transition-colors">
+                JPG to PDF
               </Link>
-              <span className="text-slate-600">|</span>
-              <Link href="/privacy" className="text-sm text-slate-400 hover:text-slate-200 transition-colors">
+              <Link href="/privacy" className="text-sm hover:text-white transition-colors">
                 {t.footer.privacy}
               </Link>
-              <Link href="/terms" className="text-sm text-slate-400 hover:text-slate-200 transition-colors">
+              <Link href="/terms" className="text-sm hover:text-white transition-colors">
                 {t.footer.terms}
               </Link>
-              <Link href="/contact" className="text-sm text-slate-400 hover:text-slate-200 transition-colors">
+              <Link href="/contact" className="text-sm hover:text-white transition-colors">
                 {t.footer.contact}
               </Link>
             </div>
