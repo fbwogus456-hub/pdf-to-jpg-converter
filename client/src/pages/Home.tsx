@@ -207,7 +207,12 @@ export default function Home() {
 
             {/* Output Format Selection - 항상 표시 */}
             <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <label className="text-sm font-medium block mb-3">{t.upload.outputFormat}</label>
+              <div className="flex justify-between items-center mb-3">
+                <label className="text-sm font-medium">{t.upload.outputFormat}</label>
+                <span className="text-xs font-semibold text-blue-600 bg-white px-3 py-1 rounded-full border border-blue-200">
+                  📁 converted-images-{outputFormat.toUpperCase()}
+                </span>
+              </div>
               <div className="flex gap-6">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
