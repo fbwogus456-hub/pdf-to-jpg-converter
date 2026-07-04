@@ -50,12 +50,29 @@ export const translations = {
     // How to Use
     howToUse: {
       title: '사용 방법',
-      step1Title: 'PDF 파일 선택',
-      step1Desc: '위의 업로드 영역에 PDF 파일을 드래그하거나 "파일 선택" 버튼을 클릭하세요.',
-      step2Title: '화질 설정',
-      step2Desc: '슬라이더를 조절하여 원하는 이미지 화질을 선택하세요. 높을수록 선명하지만 파일 크기가 커집니다.',
-      step3Title: '변환 완료',
-      step3Desc: '몇 초 후 모든 페이지가 이미지로 변환됩니다. 각 이미지를 개별 다운로드하거나 ZIP으로 일괄 다운로드하세요.',
+      step1Title: 'PDF 파일 업로드',
+      step1Desc: 'PDF 파일을 드래그하거나 "파일 선택" 버튼으로 업로드하세요. 최대 50MB까지 지원합니다.',
+      step2Title: '화질 및 포맷 선택',
+      step2Desc: '이미지 화질, 출력 포맷(JPG/PNG), 페이지 범위를 선택하세요. 필요에 따라 고급 옵션을 조정할 수 있습니다.',
+      step3Title: '변환 결과 확인',
+      step3Desc: '자동으로 변환된 이미지 미리보기를 확인하세요. 각 페이지가 올바르게 변환되었는지 확인할 수 있습니다.',
+      step4Title: '다운로드',
+      step4Desc: '개별 이미지를 하나씩 다운로드하거나 "ZIP으로 다운로드" 버튼으로 모든 이미지를 한 번에 다운로드하세요.',
+    },
+    // Content Sections
+    content: {
+      whyConvert: {
+        title: 'PDF를 JPG로 변환하는 이유',
+        desc: 'PDF 파일을 JPG 이미지로 변환하면 다양한 상황에서 유용합니다. 문서를 SNS나 메신저에서 쉽게 공유할 수 있으며, 포토샵 같은 이미지 편집 소프트웨어에서 편집이 필요할 때도 변환이 필요합니다. 또한 모바일 기기에서 PDF를 보기 어려울 때 이미지로 변환하면 더 쉽게 볼 수 있습니다. 웹사이트에 PDF 내용을 표시해야 할 때도 이미지 형식이 더 효과적일 수 있습니다.',
+      },
+      jpgVsPng: {
+        title: 'JPG와 PNG 중 무엇을 선택할까?',
+        desc: 'JPG와 PNG는 각각 장단점이 있습니다. JPG는 파일 크기가 작아서 빠른 로딩과 저장 공간 절약이 필요할 때 좋습니다. 반면 PNG는 투명도를 지원하고 손실 없는 압축으로 더 높은 화질을 제공합니다. 일반적인 문서 변환에는 JPG로 충분하지만, 로고나 그래픽처럼 투명도가 필요하거나 최고 화질이 필요한 경우 PNG를 선택하세요.',
+      },
+      whySafe: {
+        title: '브라우저 처리 방식이 안전한 이유',
+        desc: '많은 온라인 변환 도구는 파일을 서버에 업로드하여 처리합니다. 하지만 이 도구는 모든 처리를 당신의 브라우저에서만 수행하므로 파일이 인터넷으로 전송되지 않습니다. 이는 민감한 개인정보나 기밀 문서를 다룰 때 매우 중요합니다. 당신의 파일은 당신의 기기에만 존재하며, 우리 서버에 저장되거나 제3자와 공유되지 않습니다.',
+      },
     },
     // Benefits
     benefits: {
@@ -251,12 +268,29 @@ export const translations = {
     // How to Use
     howToUse: {
       title: 'How to Use',
-      step1Title: 'Select PDF File',
-      step1Desc: 'Drag a PDF file to the upload area above or click the "Select File" button.',
-      step2Title: 'Set Quality',
-      step2Desc: 'Adjust the slider to select the desired image quality. Higher values produce clearer images but larger file sizes.',
-      step3Title: 'Conversion Complete',
-      step3Desc: 'After a few seconds, all pages will be converted to images. You can download each image individually or download all as a ZIP file.',
+      step1Title: 'Upload PDF File',
+      step1Desc: 'Drag a PDF file or click the "Select File" button to upload. Supports up to 50MB.',
+      step2Title: 'Select Quality and Format',
+      step2Desc: 'Choose image quality, output format (JPG/PNG), and page range. Adjust advanced options as needed.',
+      step3Title: 'Check Conversion Result',
+      step3Desc: 'Automatically view the converted image preview. Verify that each page has been converted correctly.',
+      step4Title: 'Download',
+      step4Desc: 'Download individual images one by one or click "Download All as ZIP" to download all images at once.',
+    },
+    // Content Sections
+    content: {
+      whyConvert: {
+        title: 'Why Convert PDF to JPG?',
+        desc: 'Converting PDF files to JPG images is useful in many situations. You can easily share documents on social media or messaging apps, and convert them when editing is needed in image editing software like Photoshop. When PDF is difficult to view on mobile devices, converting to images makes it easier to view. When you need to display PDF content on a website, image format can also be more effective.',
+      },
+      jpgVsPng: {
+        title: 'JPG or PNG - Which Should You Choose?',
+        desc: 'JPG and PNG each have their advantages and disadvantages. JPG has a smaller file size, making it ideal when fast loading and storage space savings are needed. PNG, on the other hand, supports transparency and provides higher quality with lossless compression. JPG is sufficient for general document conversion, but choose PNG when transparency is needed like logos or graphics, or when the highest quality is required.',
+      },
+      whySafe: {
+        title: 'Why Browser Processing is Safe',
+        desc: 'Many online conversion tools upload files to servers for processing. However, this tool performs all processing only in your browser, so files are not transmitted over the internet. This is especially important when handling sensitive personal information or confidential documents. Your files exist only on your device and are not stored on our servers or shared with third parties.',
+      },
     },
     // Benefits
     benefits: {

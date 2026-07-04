@@ -513,16 +513,51 @@ export default function Home() {
             <CardTitle>{t.howToUse.title}</CardTitle>
           </CardHeader>
           <CardContent>
-            <ol className="space-y-3 text-sm text-slate-600">
+            <ol className="space-y-4 text-sm text-slate-600">
               {[1, 2, 3, 4].map((step) => (
                 <li key={step} className="flex gap-3">
-                  <span className="font-semibold text-blue-600 flex-shrink-0">{step}.</span>
-                  <span>{t.howToUse[`step${step}` as keyof typeof t.howToUse]}</span>
+                  <div className="flex-shrink-0">
+                    <span className="inline-flex items-center justify-center w-8 h-8 bg-blue-600 text-white font-semibold rounded-full">{step}</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-slate-900">{t.howToUse[`step${step}Title` as keyof typeof t.howToUse]}</p>
+                    <p className="text-slate-600 mt-1">{t.howToUse[`step${step}Desc` as keyof typeof t.howToUse]}</p>
+                  </div>
                 </li>
               ))}
             </ol>
           </CardContent>
         </Card>
+
+        {/* Content Sections - SEO/신뢰도 */}
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">{t.content.whyConvert.title}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-slate-600">{t.content.whyConvert.desc}</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">{t.content.jpgVsPng.title}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-slate-600">{t.content.jpgVsPng.desc}</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">{t.content.whySafe.title}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-slate-600">{t.content.whySafe.desc}</p>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* FAQ */}
         <Card className="mb-8">
