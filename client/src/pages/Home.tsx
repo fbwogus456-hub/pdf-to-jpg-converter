@@ -576,22 +576,6 @@ export default function Home() {
           </CardContent>
         </Card>
 
-        {/* Uses Section */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>{t.useCases.title}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2 text-sm text-slate-600">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <li key={i} className="flex gap-2">
-                  <span className="text-blue-600">•</span>
-                  <span>{t.useCases[`use${i}` as keyof typeof t.useCases]}</span>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
       </main>
 
       {/* Footer */}

@@ -86,15 +86,7 @@ export const translations = {
       highQuality: '고품질 출력',
       highQualityDesc: '화질 조절 옵션으로 원하는 수준의 이미지를 생성할 수 있습니다.',
     },
-    // Use Cases
-    useCases: {
-      title: '활용 사례',
-      documentSharing: '문서 공유: PDF 문서를 이미지로 변환하여 SNS나 메신저에서 쉽게 공유할 수 있습니다.',
-      imageEditing: '이미지 편집: 변환된 이미지를 포토샵이나 다른 이미지 편집 소프트웨어에서 편집할 수 있습니다.',
-      socialUpload: 'SNS 업로드: 인스타그램, 트위터 등 SNS에 PDF 내용을 이미지로 업로드할 수 있습니다.',
-      webPosting: '웹 게시: 웹사이트에 PDF 내용을 이미지로 표시할 수 있습니다.',
-      mobileViewing: '모바일 보기: 모바일 기기에서 PDF를 보기 어려울 때 이미지로 변환하여 쉽게 볼 수 있습니다.',
-    },
+
     // Comparison Section
     comparison: {
       title: '왜 이 도구를 선택해야 할까요?',
@@ -304,15 +296,7 @@ export const translations = {
       highQuality: 'High Quality Output',
       highQualityDesc: 'Generate images at your desired quality level with quality adjustment options.',
     },
-    // Use Cases
-    useCases: {
-      title: 'Use Cases',
-      documentSharing: 'Document Sharing: Convert PDF documents to images and easily share them on social media or messaging apps.',
-      imageEditing: 'Image Editing: Edit converted images in Photoshop or other image editing software.',
-      socialUpload: 'Social Media Upload: Upload PDF content as images to Instagram, Twitter, and other social platforms.',
-      webPosting: 'Web Publishing: Display PDF content as images on your website.',
-      mobileViewing: 'Mobile Viewing: Convert PDFs to images for easy viewing on mobile devices when PDF viewing is difficult.',
-    },
+
     // Comparison Section
     comparison: {
       title: 'Why Choose This Tool?',
