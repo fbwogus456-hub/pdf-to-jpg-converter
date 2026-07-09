@@ -2,32 +2,68 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://pdf-to-jpg-converter-qtod.onrender.com/</loc>
-    <lastmod>2026-06-29</lastmod>
+    <lastmod>2026-07-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://pdf-to-jpg-converter-qtod.onrender.com/jpg-to-pdf</loc>
-    <lastmod>2026-06-29</lastmod>
+    <lastmod>2026-07-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://pdf-to-jpg-converter-qtod.onrender.com/privacy</loc>
-    <lastmod>2026-06-29</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://pdf-to-jpg-converter-qtod.onrender.com/guides</loc>
+    <lastmod>2026-07-09</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pdf-to-jpg-converter-qtod.onrender.com/guides/pdf-to-jpg-when-why</loc>
+    <lastmod>2026-07-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pdf-to-jpg-converter-qtod.onrender.com/guides/jpg-vs-png</loc>
+    <lastmod>2026-07-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pdf-to-jpg-converter-qtod.onrender.com/guides/scan-to-image</loc>
+    <lastmod>2026-07-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pdf-to-jpg-converter-qtod.onrender.com/guides/pdf-page-extraction</loc>
+    <lastmod>2026-07-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pdf-to-jpg-converter-qtod.onrender.com/guides/image-quality</loc>
+    <lastmod>2026-07-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pdf-to-jpg-converter-qtod.onrender.com/privacy</loc>
+    <lastmod>2026-07-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://pdf-to-jpg-converter-qtod.onrender.com/terms</loc>
-    <lastmod>2026-06-29</lastmod>
+    <lastmod>2026-07-09</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://pdf-to-jpg-converter-qtod.onrender.com/contact</loc>
-    <lastmod>2026-06-29</lastmod>
+    <lastmod>2026-07-09</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.5</priority>
   </url>
 </urlset>
