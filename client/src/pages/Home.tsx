@@ -155,12 +155,20 @@ export default function Home() {
               <p className="text-xs text-slate-500">{t.header.subtitle}</p>
             </div>
           </div>
-          <button
-            onClick={() => setLanguage(language === 'ko' ? 'en' : 'ko')}
-            className="px-3 py-1 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-          >
-            {language === 'ko' ? 'EN' : 'KO'}
-          </button>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/guides"
+              className="text-sm font-medium text-slate-700 hover:text-blue-600 transition-colors"
+            >
+              {language === 'ko' ? '가이드' : 'Guides'}
+            </Link>
+            <button
+              onClick={() => setLanguage(language === 'ko' ? 'en' : 'ko')}
+              className="px-3 py-1 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+            >
+              {language === 'ko' ? 'EN' : 'KO'}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -584,6 +592,9 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-8">
             <p className="text-sm">{t.footer.copyright}</p>
             <div className="flex gap-6 flex-wrap justify-center">
+              <Link href="/guides" className="text-sm hover:text-white transition-colors">
+                {language === 'ko' ? '가이드' : 'Guides'}
+              </Link>
               <Link href="/jpg-to-pdf" className="text-sm hover:text-white transition-colors">
                 JPG to PDF
               </Link>
