@@ -9,12 +9,12 @@ export default function Contact() {
       {/* Header */}
       <header className="border-b border-slate-200/50 backdrop-blur-sm bg-white/80">
         <div className="max-w-4xl mx-auto px-4 py-6">
-          <Link href="/">
-            <Button variant="ghost" className="mb-4">
+          <Button variant="ghost" className="mb-4" asChild>
+            <Link href="/">
               <ArrowLeft className="w-4 h-4 mr-2" />
               돌아가기
-            </Button>
-          </Link>
+            </Link>
+          </Button>
           <h1 className="text-3xl font-bold text-slate-900">문의</h1>
           <p className="text-slate-600 mt-2">질문이나 피드백이 있으신가요? 언제든지 연락주세요.</p>
         </div>
