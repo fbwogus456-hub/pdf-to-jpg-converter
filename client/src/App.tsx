@@ -10,6 +10,12 @@ import JpgToPdf from "./pages/JpgToPdf";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Contact from "./pages/Contact";
+import Guides from "./pages/Guides";
+import PdfToJpgWhenWhy from "./pages/guides/PdfToJpgWhenWhy";
+import JpgVsPng from "./pages/guides/JpgVsPng";
+import ScanToImage from "./pages/guides/ScanToImage";
+import PdfPageExtraction from "./pages/guides/PdfPageExtraction";
+import ImageQuality from "./pages/guides/ImageQuality";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -20,6 +26,12 @@ function Router() {
       <Route path={"/privacy"} component={Privacy} />
       <Route path={"/terms"} component={Terms} />
       <Route path={"/contact"} component={Contact} />
+      <Route path={"/guides"} component={Guides} />
+      <Route path={"/guides/pdf-to-jpg-when-why"} component={PdfToJpgWhenWhy} />
+      <Route path={"/guides/jpg-vs-png"} component={JpgVsPng} />
+      <Route path={"/guides/scan-to-image"} component={ScanToImage} />
+      <Route path={"/guides/pdf-page-extraction"} component={PdfPageExtraction} />
+      <Route path={"/guides/image-quality"} component={ImageQuality} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
