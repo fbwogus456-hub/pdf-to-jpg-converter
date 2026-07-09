@@ -8,12 +8,12 @@ export default function Privacy() {
       {/* Header */}
       <header className="border-b border-slate-200/50 backdrop-blur-sm bg-white/80">
         <div className="max-w-4xl mx-auto px-4 py-6">
-          <Link href="/">
-            <Button variant="ghost" className="mb-4">
+          <Button variant="ghost" className="mb-4" asChild>
+            <Link href="/">
               <ArrowLeft className="w-4 h-4 mr-2" />
               돌아가기
-            </Button>
-          </Link>
+            </Link>
+          </Button>
           <h1 className="text-3xl font-bold text-slate-900">개인정보처리방침</h1>
           <p className="text-slate-600 mt-2">마지막 업데이트: 2026년 6월</p>
         </div>
