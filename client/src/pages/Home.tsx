@@ -257,24 +257,6 @@ export default function Home() {
               <p className="text-xs text-slate-500 mt-2">{t.upload.formatHint}</p>
             </div>
 
-            {/* Advanced Options */}
-            <div className="mb-6 border-t pt-6">
-              <button
-                type="button"
-                onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
-                className="flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-slate-900"
-              >
-                <ChevronDown size={16} className={`transition-transform ${showAdvancedOptions ? 'rotate-180' : ''}`} />
-                {t.upload.advancedOptions}
-              </button>
-
-              {showAdvancedOptions && (
-                <div className="mt-4 space-y-4">
-                  {/* Additional advanced options can be added here */}
-                </div>
-              )}
-            </div>
-
             {/* File Upload Area */}
             <div
               onDragOver={handleDragOver}
