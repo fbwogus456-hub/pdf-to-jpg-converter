@@ -56,18 +56,21 @@ export const convertImagesToPDF = async (
             pdf!.addPage(fmt);
           }
           pdf!.addImage(imageData, 'JPEG', 0, 0, imgWidth, imgHeight);
-        } else {
-          // Fixed page size (A4 or Letter). Swap width/height for landscape
-          // so orientation is guaranteed regardless of jsPDF's own handling.
-          const [pw, ph] = PAGE_DIMENSIONS[pageSize];
-          const fmt: [number, number] =
-            orientation === 'landscape' ? [ph, pw] : [pw, ph];
+          } else {
+          // Fixed page size (A4 or Letter). Always pass the portrait
+          // dimensions as the format, and let jsPDF's `orientation`
+          // option decide portrait vs. landscape. jsPDF normalizes a
+          // raw format array (longest side = height), so passing a
+          // swapped array alone does NOT rotate the page — the explicit
+          // orientation flag is what actually works.
+          const fmt: [number, number] = PAGE_DIMENSIONS[pageSize];
 
           if (i === 0) {
-            pdf = new jsPDF({ unit: 'mm', format: fmt });
+            pdf = new jsPDF({ unit: 'mm', format: fmt, orientation });
           } else {
-            pdf!.addPage(fmt);
+            pdf!.addPage(fmt, orientation);
           }
+
 
           const pageWidth = pdf!.internal.pageSize.getWidth();
           const pageHeight = pdf!.internal.pageSize.getHeight();
