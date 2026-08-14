@@ -31,7 +31,25 @@ const guides = [
     title: "이미지 화질 설정과 파일 크기의 관계",
     description: "화질과 용량 사이에서 최적의 균형을 찾는 방법을 알아봅니다.",
   },
+  {
+    href: "/guides/combine-images-to-pdf",
+    title: "여러 장의 사진을 하나의 PDF로 합치기",
+    description:
+      "흩어진 이미지 파일을 순서대로 정리해 한 개의 PDF 문서로 묶는 방법을 알아봅니다.",
+  },
+  {
+    href: "/guides/pdf-page-size-orientation",
+    title: "PDF 만들 때 용지 크기와 방향 고르는 법",
+    description:
+      "A4와 Letter, 세로와 가로 중 상황에 맞는 설정을 고르는 기준을 알아봅니다.",
+  },
+  {
+    href: "/guides/jpg-to-pdf-when-why",
+    title: "JPG를 PDF로 바꿔야 하는 이유",
+    description: "이미지 대신 PDF로 제출하거나 공유하는 것이 나은 상황을 알아봅니다.",
+  },
 ];
+
 
 export default function Guides() {
   return (
