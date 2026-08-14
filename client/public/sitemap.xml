@@ -42,12 +42,31 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  <url>
+   <url>
     <loc>https://pdf-to-jpg-converter-qtod.onrender.com/guides/image-quality</loc>
     <lastmod>2026-07-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://pdf-to-jpg-converter-qtod.onrender.com/guides/combine-images-to-pdf</loc>
+    <lastmod>2026-08-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pdf-to-jpg-converter-qtod.onrender.com/guides/pdf-page-size-orientation</loc>
+    <lastmod>2026-08-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pdf-to-jpg-converter-qtod.onrender.com/guides/jpg-to-pdf-when-why</loc>
+    <lastmod>2026-08-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
   <url>
     <loc>https://pdf-to-jpg-converter-qtod.onrender.com/privacy</loc>
     <lastmod>2026-07-09</lastmod>
