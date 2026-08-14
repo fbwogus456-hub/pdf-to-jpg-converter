@@ -16,6 +16,9 @@ import JpgVsPng from "./pages/guides/JpgVsPng";
 import ScanToImage from "./pages/guides/ScanToImage";
 import PdfPageExtraction from "./pages/guides/PdfPageExtraction";
 import ImageQuality from "./pages/guides/ImageQuality";
+import CombineImagesToPdf from "./pages/guides/CombineImagesToPdf";
+import PdfPageSizeOrientation from "./pages/guides/PdfPageSizeOrientation";
+import JpgToPdfWhenWhy from "./pages/guides/JpgToPdfWhenWhy";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -32,6 +35,10 @@ function Router() {
       <Route path={"/guides/scan-to-image"} component={ScanToImage} />
       <Route path={"/guides/pdf-page-extraction"} component={PdfPageExtraction} />
       <Route path={"/guides/image-quality"} component={ImageQuality} />
+      <Route path={"/guides/combine-images-to-pdf"} component={CombineImagesToPdf} />
+      <Route path={"/guides/pdf-page-size-orientation"} component={PdfPageSizeOrientation} />
+      <Route path={"/guides/jpg-to-pdf-when-why"} component={JpgToPdfWhenWhy} />
+
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
