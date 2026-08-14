@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Upload, Download, FileImage, Trash2, Lock, ChevronDown, Globe } from "lucide-react";
-import { toast } from "sonner";Add orientation and page size options to jpg-to-pdf converter
+import { toast } from "sonner";
 import { Link } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { translations } from "@/lib/translations";
