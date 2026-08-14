@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Upload, Download, FileImage, Trash2, Lock, ChevronDown, Globe } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "sonner";Add orientation and page size options to jpg-to-pdf converter
 import { Link } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { translations } from "@/lib/translations";
-import { convertImagesToPDF, downloadPDF, ImageFile } from "@/lib/jpgToPdfConverter";
+import { convertImagesToPDF, downloadPDF, ImageFile, PdfOrientation, PdfPageSize } from "@/lib/jpgToPdfConverter";
 
 export default function JpgToPdf() {
 
@@ -19,6 +19,8 @@ export default function JpgToPdf() {
   const [images, setImages] = useState<ImageFile[]>([]);
   const [isConverting, setIsConverting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [orientation, setOrientation] = useState<PdfOrientation>('portrait');
+  const [pageSize, setPageSize] = useState<PdfPageSize>('a4');
 
   const handleFileSelect = (files: FileList) => {
     const newImages: ImageFile[] = [];
@@ -90,7 +92,7 @@ export default function JpgToPdf() {
 
     setIsConverting(true);
     try {
-      const blob = await convertImagesToPDF(images, 'converted.pdf');
+      const blob = await convertImagesToPDF(images, 'converted.pdf', { orientation, pageSize });
       downloadPDF(blob, 'converted.pdf');
       toast.success(t.jpgToPdf.pdfReady);
     } catch (error) {
@@ -195,6 +197,69 @@ export default function JpgToPdf() {
             />
           </CardContent>
         </Card>
+        {/* PDF Options */}
+        {images.length > 0 && (
+          <Card className="mb-6 shadow-md">
+            <CardContent className="pt-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Page Size */}
+                <div>
+                  <p className="text-sm font-semibold text-slate-700 mb-2">
+                    {language === 'ko' ? '용지 크기' : 'Page Size'}
+                  </p>
+                  <div className="flex gap-2 flex-wrap">
+                    {([
+                      { value: 'a4', label: 'A4' },
+                      { value: 'letter', label: 'Letter' },
+                      { value: 'fit', label: language === 'ko' ? '이미지 크기에 맞춤' : 'Fit to image' },
+                    ] as { value: PdfPageSize; label: string }[]).map((opt) => (
+                      <Button
+                        key={opt.value}
+                        variant={pageSize === opt.value ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setPageSize(opt.value)}
+                        disabled={isConverting}
+                      >
+                        {opt.label}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Orientation */}
+                <div>
+                  <p className="text-sm font-semibold text-slate-700 mb-2">
+                    {language === 'ko' ? '페이지 방향' : 'Orientation'}
+                  </p>
+                  <div className="flex gap-2 flex-wrap">
+                    {([
+                      { value: 'portrait', label: language === 'ko' ? '세로' : 'Portrait' },
+                      { value: 'landscape', label: language === 'ko' ? '가로' : 'Landscape' },
+                    ] as { value: PdfOrientation; label: string }[]).map((opt) => (
+                      <Button
+                        key={opt.value}
+                        variant={orientation === opt.value ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setOrientation(opt.value)}
+                        disabled={isConverting || pageSize === 'fit'}
+                      >
+                        {opt.label}
+                      </Button>
+                    ))}
+                  </div>
+                  {pageSize === 'fit' && (
+                    <p className="text-xs text-slate-400 mt-2">
+                      {language === 'ko'
+                        ? '이미지 크기에 맞춤 모드에서는 방향이 자동 결정됩니다.'
+                        : 'Orientation is automatic in "Fit to image" mode.'}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
 
         {/* Image List */}
         {images.length > 0 && (
