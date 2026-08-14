@@ -14,6 +14,12 @@ export interface PdfOptions {
   pageSize?: PdfPageSize;
 }
 
+// Page dimensions in mm (portrait: [width, height])
+const PAGE_DIMENSIONS: Record<'a4' | 'letter', [number, number]> = {
+  a4: [210, 297],
+  letter: [215.9, 279.4],
+};
+
 export const convertImagesToPDF = async (
   images: ImageFile[],
   fileName: string = 'converted.pdf',
@@ -26,7 +32,6 @@ export const convertImagesToPDF = async (
   const orientation: PdfOrientation = options.orientation || 'portrait';
   const pageSize: PdfPageSize = options.pageSize || 'a4';
 
-  // "fit" mode: each page matches the image size, so we create the PDF lazily per image.
   let pdf: jsPDF | null = null;
 
   for (let i = 0; i < images.length; i++) {
@@ -44,30 +49,24 @@ export const convertImagesToPDF = async (
 
         if (pageSize === 'fit') {
           // Page size follows the image's own aspect ratio (in px units).
-          const pageOrientation: PdfOrientation =
-            imgWidth >= imgHeight ? 'landscape' : 'portrait';
-
+          const fmt: [number, number] = [imgWidth, imgHeight];
           if (i === 0) {
-            pdf = new jsPDF({
-              orientation: pageOrientation,
-              unit: 'px',
-              format: [imgWidth, imgHeight],
-            });
+            pdf = new jsPDF({ unit: 'px', format: fmt });
           } else {
-            pdf!.addPage([imgWidth, imgHeight], pageOrientation);
+            pdf!.addPage(fmt);
           }
-
           pdf!.addImage(imageData, 'JPEG', 0, 0, imgWidth, imgHeight);
         } else {
-          // Fixed page size (A4 or Letter) with the chosen orientation.
+          // Fixed page size (A4 or Letter). Swap width/height for landscape
+          // so orientation is guaranteed regardless of jsPDF's own handling.
+          const [pw, ph] = PAGE_DIMENSIONS[pageSize];
+          const fmt: [number, number] =
+            orientation === 'landscape' ? [ph, pw] : [pw, ph];
+
           if (i === 0) {
-            pdf = new jsPDF({
-              orientation,
-              unit: 'mm',
-              format: pageSize,
-            });
+            pdf = new jsPDF({ unit: 'mm', format: fmt });
           } else {
-            pdf!.addPage(pageSize, orientation);
+            pdf!.addPage(fmt);
           }
 
           const pageWidth = pdf!.internal.pageSize.getWidth();
