@@ -11,8 +11,9 @@ Allow: /
 Sitemap: https://pdf-to-jpg-converter-qtod.onrender.com/sitemap.xml
 `;
 
-  const adsContent = `google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+  const adsContent = `google.com, pub-2627185377586716, DIRECT, f08c47fec0942fa0
 `;
+
 
   app.get("/robots.txt", (_req, res) => {
     res.setHeader("Content-Type", "text/plain; charset=UTF-8");
