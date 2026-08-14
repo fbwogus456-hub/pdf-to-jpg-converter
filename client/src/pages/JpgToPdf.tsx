@@ -10,6 +10,81 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { translations } from "@/lib/translations";
 import { convertImagesToPDF, downloadPDF, ImageFile, PdfOrientation, PdfPageSize } from "@/lib/jpgToPdfConverter";
 
+// A CSS-based preview that mirrors the PDF generation logic
+// (aspect-ratio, centered, orientation-aware).
+function PdfPagePreview({
+  src,
+  orientation,
+  pageSize,
+}: {
+  src: string;
+  orientation: PdfOrientation;
+  pageSize: PdfPageSize;
+}) {
+  const [imgRatio, setImgRatio] = useState(1); // width / height
+
+  // Page aspect ratios (width / height) in portrait form
+  const PAGE_RATIO: Record<'a4' | 'letter', number> = {
+    a4: 210 / 297,
+    letter: 215.9 / 279.4,
+  };
+
+  // Fixed preview box height in px
+  const BOX_H = 320;
+
+  let pageW: number;
+  let pageH: number;
+
+  if (pageSize === 'fit') {
+    // Page follows the image itself
+    if (imgRatio >= 1) {
+      pageH = BOX_H * 0.8;
+      pageW = pageH * imgRatio;
+    } else {
+      pageH = BOX_H;
+      pageW = pageH * imgRatio;
+    }
+  } else {
+    const baseRatio = PAGE_RATIO[pageSize]; // portrait width/height
+    const ratio = orientation === 'landscape' ? 1 / baseRatio : baseRatio;
+    pageH = BOX_H;
+    pageW = pageH * ratio;
+  }
+
+  // Image size inside page (5mm margin ~ 2.5% of page each side), keep ratio
+  let innerW: number;
+  let innerH: number;
+  const marginFactor = pageSize === 'fit' ? 1 : 0.95;
+  const availW = pageW * marginFactor;
+  const availH = pageH * marginFactor;
+  innerW = availW;
+  innerH = innerW / imgRatio;
+  if (innerH > availH) {
+    innerH = availH;
+    innerW = innerH * imgRatio;
+  }
+
+  return (
+    <div
+      className="bg-white shadow-lg border border-slate-300 flex items-center justify-center overflow-hidden"
+      style={{ width: `${pageW}px`, height: `${pageH}px` }}
+    >
+      <img
+        src={src}
+        alt="preview"
+        style={{ width: `${innerW}px`, height: `${innerH}px`, objectFit: 'contain' }}
+        onLoad={(e) => {
+          const el = e.currentTarget;
+          if (el.naturalHeight > 0) {
+            setImgRatio(el.naturalWidth / el.naturalHeight);
+          }
+        }}
+      />
+    </div>
+  );
+}
+
+
 export default function JpgToPdf() {
 
   const { language, setLanguage } = useLanguage();
@@ -260,7 +335,32 @@ export default function JpgToPdf() {
           </Card>
         )}
 
+        {/* Live Preview */}
+        {images.length > 0 && (
+          <Card className="mb-6 shadow-md">
+            <CardHeader>
+              <CardTitle className="text-lg">
+                {language === 'ko' ? '미리보기' : 'Preview'}
+              </CardTitle>
+              <CardDescription>
+                {language === 'ko'
+                  ? '첫 페이지가 PDF에서 어떻게 보일지 미리 확인하세요.'
+                  : 'See how the first page will look in the PDF.'}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-center">
+                <PdfPagePreview
+                  src={images[0].preview}
+                  orientation={orientation}
+                  pageSize={pageSize}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
+        
         {/* Image List */}
         {images.length > 0 && (
           <Card className="mb-12 shadow-lg">
