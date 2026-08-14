@@ -162,7 +162,14 @@ export default function Home() {
             >
               {language === 'ko' ? '가이드' : 'Guides'}
             </Link>
+            <Link
+              href="/jpg-to-pdf"
+              className="text-sm font-medium text-slate-700 hover:text-blue-600 transition-colors"
+            >
+              JPG→PDF
+            </Link>
             <button
+
               onClick={() => setLanguage(language === 'ko' ? 'en' : 'ko')}
               className="px-3 py-1 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
             >
