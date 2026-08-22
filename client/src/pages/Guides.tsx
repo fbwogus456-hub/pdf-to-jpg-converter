@@ -48,6 +48,13 @@ const guides = [
     title: "JPG를 PDF로 바꿔야 하는 이유",
     description: "이미지 대신 PDF로 제출하거나 공유하는 것이 나은 상황을 알아봅니다.",
   },
+  {
+    href: "/guides/pdf-to-image-iphone",
+    title: "아이폰에서 PDF를 사진으로 저장하는 법",
+    description: "아이폰과 아이패드에서 PDF를 JPG·PNG 사진으로 바꿔 갤러리에 저장하는 방법을 알아봅니다.",
+  },
+
+
 ];
 
 
