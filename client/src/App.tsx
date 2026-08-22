@@ -21,6 +21,7 @@ import PdfPageSizeOrientation from "./pages/guides/PdfPageSizeOrientation";
 import JpgToPdfWhenWhy from "./pages/guides/JpgToPdfWhenWhy";
 import About from "./pages/About";
 import PdfToImageIphone from "./pages/guides/PdfToImageIphone";
+import ReducePdfSize from "./pages/guides/ReducePdfSize";
 
 
 function Router() {
@@ -43,6 +44,8 @@ function Router() {
       <Route path={"/guides/pdf-page-size-orientation"} component={PdfPageSizeOrientation} />
       <Route path={"/guides/jpg-to-pdf-when-why"} component={JpgToPdfWhenWhy} />
       <Route path={"/guides/pdf-to-image-iphone"} component={PdfToImageIphone} />
+      <Route path={"/guides/reduce-pdf-size"} component={ReducePdfSize} />
+
 
 
       <Route path={"/404"} component={NotFound} />
