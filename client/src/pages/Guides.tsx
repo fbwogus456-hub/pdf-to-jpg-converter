@@ -53,6 +53,11 @@ const guides = [
     title: "아이폰에서 PDF를 사진으로 저장하는 법",
     description: "아이폰과 아이패드에서 PDF를 JPG·PNG 사진으로 바꿔 갤러리에 저장하는 방법을 알아봅니다.",
   },
+  {
+    href: "/guides/reduce-pdf-size",
+    title: "PDF 용량 줄이는 법",
+    description: "무거운 PDF를 내용은 그대로 두면서 용량만 효과적으로 줄이는 방법을 알아봅니다.",
+  },
 
 
 ];
