@@ -163,6 +163,13 @@ export default function Home() {
               {language === 'ko' ? '가이드' : 'Guides'}
             </Link>
             <Link
+              href="/about"
+              className="text-sm font-medium text-slate-700 hover:text-blue-600 transition-colors"
+            >
+              {language === 'ko' ? '소개' : 'About'}
+            </Link>
+
+            <Link
               href="/jpg-to-pdf"
               className="text-sm font-medium text-slate-700 hover:text-blue-600 transition-colors"
             >
