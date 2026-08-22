@@ -58,6 +58,11 @@ const guides = [
     title: "PDF 용량 줄이는 법",
     description: "무거운 PDF를 내용은 그대로 두면서 용량만 효과적으로 줄이는 방법을 알아봅니다.",
   },
+  {
+    href: "/guides/share-pdf-as-image",
+    title: "카카오톡·인스타그램으로 PDF를 이미지로 공유하는 법",
+    description: "메신저와 SNS에서 PDF를 이미지로 바꿔 누구나 바로 볼 수 있게 공유하는 방법을 알아봅니다.",
+  },
 
 
 ];
