@@ -19,6 +19,7 @@ import ImageQuality from "./pages/guides/ImageQuality";
 import CombineImagesToPdf from "./pages/guides/CombineImagesToPdf";
 import PdfPageSizeOrientation from "./pages/guides/PdfPageSizeOrientation";
 import JpgToPdfWhenWhy from "./pages/guides/JpgToPdfWhenWhy";
+import About from "./pages/About";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -30,6 +31,7 @@ function Router() {
       <Route path={"/terms"} component={Terms} />
       <Route path={"/contact"} component={Contact} />
       <Route path={"/guides"} component={Guides} />
+      <Route path={"/about"} component={About} />
       <Route path={"/guides/pdf-to-jpg-when-why"} component={PdfToJpgWhenWhy} />
       <Route path={"/guides/jpg-vs-png"} component={JpgVsPng} />
       <Route path={"/guides/scan-to-image"} component={ScanToImage} />
