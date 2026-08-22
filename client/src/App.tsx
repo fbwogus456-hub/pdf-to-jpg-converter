@@ -22,6 +22,7 @@ import JpgToPdfWhenWhy from "./pages/guides/JpgToPdfWhenWhy";
 import About from "./pages/About";
 import PdfToImageIphone from "./pages/guides/PdfToImageIphone";
 import ReducePdfSize from "./pages/guides/ReducePdfSize";
+import SharePdfAsImage from "./pages/guides/SharePdfAsImage";
 
 
 function Router() {
@@ -45,6 +46,8 @@ function Router() {
       <Route path={"/guides/jpg-to-pdf-when-why"} component={JpgToPdfWhenWhy} />
       <Route path={"/guides/pdf-to-image-iphone"} component={PdfToImageIphone} />
       <Route path={"/guides/reduce-pdf-size"} component={ReducePdfSize} />
+      <Route path={"/guides/share-pdf-as-image"} component={SharePdfAsImage} />
+
 
 
 
