@@ -20,6 +20,8 @@ import CombineImagesToPdf from "./pages/guides/CombineImagesToPdf";
 import PdfPageSizeOrientation from "./pages/guides/PdfPageSizeOrientation";
 import JpgToPdfWhenWhy from "./pages/guides/JpgToPdfWhenWhy";
 import About from "./pages/About";
+import PdfToImageIphone from "./pages/guides/PdfToImageIphone";
+
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -40,6 +42,8 @@ function Router() {
       <Route path={"/guides/combine-images-to-pdf"} component={CombineImagesToPdf} />
       <Route path={"/guides/pdf-page-size-orientation"} component={PdfPageSizeOrientation} />
       <Route path={"/guides/jpg-to-pdf-when-why"} component={JpgToPdfWhenWhy} />
+      <Route path={"/guides/pdf-to-image-iphone"} component={PdfToImageIphone} />
+
 
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
